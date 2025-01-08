@@ -1,10 +1,11 @@
 import { useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion"; // Import Framer Motion
-import { auth, db } from "../firebaseConfig";
-import { doc, setDoc } from "firebase/firestore";
+import { useBooks } from "../context/BookContext";
 
-const AddBook = ({ onAddBook }) => {
+
+const AddBook = () => {
+  const { books, setBooks } = useBooks(); // Accéder au contexte global pour les livres
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false); // État pour le chargement
@@ -16,17 +17,20 @@ const AddBook = ({ onAddBook }) => {
     cover: "",
     status: "À lire",
   });
+  const API_KEY = import.meta.env.VITE_API_KEY;  // Récupère la clé depuis .env
 
   const handleSearch = async () => {
     setIsLoading(true); // Début du chargement
     setSearchResults([]); // Réinitialiser les résultats
     try {
-      const response = await axios.get(
-        `https://www.googleapis.com/books/v1/volumes?q=${searchTerm}`
+      const response = await fetch(
+        `https://www.googleapis.com/books/v1/volumes?q=${searchTerm}&key=${API_KEY}`
       );
-      setSearchResults(response.data.items || []);
+      const data = await response.json();
+      setSearchResults(data.items || []);
     } catch (error) {
       console.error("Erreur lors de la recherche :", error);
+      alert("Impossible de récupérer les résultats. Vérifiez votre clé API.");
     } finally {
       setIsLoading(false); // Fin du chargement
     }
@@ -38,7 +42,8 @@ const AddBook = ({ onAddBook }) => {
       handleSearch();
     }
   };
-  // Fonction pour ajouter un livre depuis les resultats
+
+  // Fonction pour ajouter un livre depuis les résultats
   const handleAddBook = (book) => {
     const newBook = {
       id: book.id,
@@ -47,7 +52,7 @@ const AddBook = ({ onAddBook }) => {
       cover: book.volumeInfo.imageLinks?.thumbnail || "",
       status: "À lire",
     };
-    onAddBook(newBook);
+    setBooks((prevBooks) => [...prevBooks, newBook]);
 
     // Afficher le message de succès
     setSuccessMessage(`Le livre "${newBook.title}" a été ajouté avec succès.`);
@@ -64,7 +69,7 @@ const AddBook = ({ onAddBook }) => {
       id: Date.now().toString(),
       ...manualBook,
     };
-    onAddBook(newBook);
+    setBooks((prevBooks) => [...prevBooks, newBook]);
     setSuccessMessage(`Le livre "${manualBook.title}" a été ajouté avec succès.`);
     setManualBook({
       title: "",
@@ -76,20 +81,6 @@ const AddBook = ({ onAddBook }) => {
     setTimeout(() => setSuccessMessage(""), 3000);
   };
 
-  const storageAddBook = async (newBook) => {
-    const user = auth.currentUser;
-    if (user) {
-      const bookRef = doc(db, "books", `${user.uid}_${newBook.id}`);
-      await setDoc(bookRef, {
-        ...newBook,
-        userId: user.uid,
-      });
-      setSuccessMessage(`Le livre "${newBook.title}" a été ajouté.`);
-    }
-  };
-  
-
-
   return (
     <div className="p-4 mt-8 bg-white dark:bg-gray-700 dark:text-gray-200 rounded shadow-md">
       <h2 className="text-2xl font-bold mb-4">Ajouter un Livre</h2>
@@ -97,11 +88,13 @@ const AddBook = ({ onAddBook }) => {
       <div className="mb-4">
         <input
           type="text"
+          id="searchTerm"
+          name="searchTerm"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Rechercher un livre"
-          className="border border-gray-300 rounded p-2 w-full text-black"
+          className="border border-gray-300 rounded p-2 w-full dark:text-black"
         />
         <button
           onClick={handleSearch}
@@ -115,13 +108,13 @@ const AddBook = ({ onAddBook }) => {
       {/* Message de succès */}
       {successMessage && (
         <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -20 }}
-        className="bg-green-100 text-green-800 p-2 rounded my-4"
-      >
-        {successMessage}
-      </motion.div>
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          className="bg-green-100 text-green-800 p-2 rounded my-4"
+        >
+          {successMessage}
+        </motion.div>
       )}
       <motion.div
         initial={{ opacity: 0 }}
@@ -131,12 +124,12 @@ const AddBook = ({ onAddBook }) => {
       >
         {searchResults.map((book) => (
           <motion.div
-          key={book.id}
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.3 }}
-          className="bg-white shadow-md rounded-md p-4 flex flex-col items-center"
-        >
+            key={book.id}
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.3 }}
+            className="bg-white shadow-md rounded-md p-4 flex flex-col items-center"
+          >
             <img
               src={book.volumeInfo.imageLinks?.thumbnail || ""}
               alt={book.volumeInfo.title}
@@ -152,15 +145,17 @@ const AddBook = ({ onAddBook }) => {
             >
               Ajouter
             </button>
-            </motion.div>
+          </motion.div>
         ))}
       </motion.div>
-         {/* Formulaire d'ajout manuel */}
-        <div className="mt-8">
+      {/* Formulaire d'ajout manuel */}
+      <div className="mt-8">
         <h3 className="text-xl font-bold mb-4">Ajouter un Livre Manuellement</h3>
         <form onSubmit={handleAddManualBook} className="space-y-4">
           <input
             type="text"
+            id="title"
+            name="title"
             placeholder="Titre"
             value={manualBook.title}
             onChange={(e) => setManualBook({ ...manualBook, title: e.target.value })}
@@ -168,6 +163,8 @@ const AddBook = ({ onAddBook }) => {
           />
           <input
             type="text"
+            id="author"
+            name="author"
             placeholder="Auteur"
             value={manualBook.author}
             onChange={(e) => setManualBook({ ...manualBook, author: e.target.value })}
@@ -175,6 +172,8 @@ const AddBook = ({ onAddBook }) => {
           />
           <input
             type="text"
+            id="genre"
+            name="genre"
             placeholder="Genre"
             value={manualBook.genre}
             onChange={(e) => setManualBook({ ...manualBook, genre: e.target.value })}
@@ -182,6 +181,8 @@ const AddBook = ({ onAddBook }) => {
           />
           <input
             type="text"
+            id="cover"
+            name="cover"
             placeholder="URL de la couverture (facultatif)"
             value={manualBook.cover}
             onChange={(e) => setManualBook({ ...manualBook, cover: e.target.value })}

@@ -18,9 +18,8 @@ function Statistics({ books }) {
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
 
   return (
-    <div className="p-4 bg-gray-100 rounded-md shadow-md dark:bg-gray-900">
-      <h2 className="text-2xl font-bold mb-4 dark:text-white">Statistiques</h2>
-      <div className="flex justify-center">
+    <div className="p-4 bg-gray-100 rounded-md shadow-md flex justify-center dark:bg-gray-900">
+      <h2 className="text-2xl font-bold mb-4">Statistiques</h2>
       <PieChart width={400} height={300}>
         <Pie
           data={data}
@@ -39,7 +38,6 @@ function Statistics({ books }) {
         <Tooltip />
         <Legend />
       </PieChart>
-      </div>
       <div className="mt-4 dark:text-white">
         <p><strong>Total :</strong> {books.length} livres</p>
         {data.map((item) => (

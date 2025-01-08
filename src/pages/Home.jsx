@@ -1,20 +1,9 @@
-import { useEffect, useState } from "react";
+import { useBooks } from "../context/BookContext";
 import Statistics from "../components/Statistics";
 import { Link } from "react-router-dom";
 
 const Home = () => {
-  const [books, setBooks] = useState([]);
-
-  // Charger les livres depuis localStorage
-  useEffect(() => {
-    try {
-      const storedBooks = JSON.parse(localStorage.getItem("books")) || [];
-      setBooks(storedBooks);
-    } catch (error) {
-      console.error("Erreur lors du chargement des livres depuis localStorage:", error);
-      setBooks([]);
-    }
-  }, []);
+  const { books } = useBooks();
 
   return (
     <div className="p-4 bg-gray-100 dark:bg-gray-900 dark:text-white">
