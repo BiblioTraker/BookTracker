@@ -83,6 +83,8 @@ const AddBook = ({ onAddBook }) => {
       <div className="mb-4">
         <input
           type="text"
+          id="searchTerm"
+          name="searchTerm"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           onKeyDown={handleKeyDown}
@@ -147,6 +149,8 @@ const AddBook = ({ onAddBook }) => {
         <form onSubmit={handleAddManualBook} className="space-y-4">
           <input
             type="text"
+            id="title"
+            name="title"
             placeholder="Titre"
             value={manualBook.title}
             onChange={(e) => setManualBook({ ...manualBook, title: e.target.value })}
@@ -154,6 +158,8 @@ const AddBook = ({ onAddBook }) => {
           />
           <input
             type="text"
+            id="author"
+            name="author"
             placeholder="Auteur"
             value={manualBook.author}
             onChange={(e) => setManualBook({ ...manualBook, author: e.target.value })}
@@ -161,6 +167,8 @@ const AddBook = ({ onAddBook }) => {
           />
           <input
             type="text"
+            id="genre"
+            name="genre"
             placeholder="Genre"
             value={manualBook.genre}
             onChange={(e) => setManualBook({ ...manualBook, genre: e.target.value })}
@@ -168,6 +176,9 @@ const AddBook = ({ onAddBook }) => {
           />
           <input
             type="text"
+            id="cover"
+            name="cover"
+            
             placeholder="URL de la couverture (facultatif)"
             value={manualBook.cover}
             onChange={(e) => setManualBook({ ...manualBook, cover: e.target.value })}
