@@ -13,16 +13,16 @@ function BookList({ books, onDeleteBook, onUpdateStatus }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.3 }}
-            className="bg-white shadow-md rounded-md p-4 flex flex-col items-center mb-4"
+            className="bg-white shadow-md rounded-md p-4 flex flex-col items-center mb-4 dark:bg-gray-800"
             >
               <img
                 src={book.cover}
                 alt={book.title}
                 className="w-32 h-48 object-cover mb-4"
               />
-              <h3 className="text-lg font-semibold">{book.title}</h3>
-              <p className="text-gray-500">Auteur : {book.author}</p>
-              <p className="text-gray-500">Statut : {book.status}</p>
+              <h3 className="text-lg font-semibold dark:text-white">{book.title}</h3>
+              <p className="text-gray-500 dark:text-white">Auteur : {book.author}</p>
+              <p className="text-gray-500 dark:text-white">Statut : {book.status}</p>
               <div className="flex space-x-2 mt-4">
                 <button
                   onClick={() => onUpdateStatus(book.id)}

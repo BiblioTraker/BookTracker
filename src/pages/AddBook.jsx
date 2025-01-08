@@ -3,6 +3,7 @@ import axios from "axios";
 import { motion } from "framer-motion"; // Import Framer Motion
 import { useBooks } from "../context/BookContext";
 
+
 const AddBook = () => {
   const { books, setBooks } = useBooks(); // Accéder au contexte global pour les livres
   const [searchTerm, setSearchTerm] = useState("");
@@ -81,7 +82,7 @@ const AddBook = () => {
   };
 
   return (
-    <div className="p-4 bg-white dark:bg-gray-700 dark:text-gray-200 rounded shadow-md">
+    <div className="p-4 mt-8 bg-white dark:bg-gray-700 dark:text-gray-200 rounded shadow-md">
       <h2 className="text-2xl font-bold mb-4">Ajouter un Livre</h2>
       {/* Recherche de livres */}
       <div className="mb-4">
@@ -134,7 +135,7 @@ const AddBook = () => {
               alt={book.volumeInfo.title}
               className="w-32 h-48 object-cover mb-4"
             />
-            <h3 className="text-lg font-semibold">{book.volumeInfo.title}</h3>
+            <h3 className="text-lg font-semibold text-black">{book.volumeInfo.title}</h3>
             <p className="text-gray-500">
               Auteur : {book.volumeInfo.authors?.join(", ") || "Auteur inconnu"}
             </p>

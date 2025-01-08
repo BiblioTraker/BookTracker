@@ -38,7 +38,7 @@ function Statistics({ books }) {
         <Tooltip />
         <Legend />
       </PieChart>
-      <div className="mt-4">
+      <div className="mt-4 dark:text-white">
         <p><strong>Total :</strong> {books.length} livres</p>
         {data.map((item) => (
           <p key={item.name}>

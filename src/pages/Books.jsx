@@ -7,19 +7,6 @@ const Books = () => {
   const [filterStatus, setFilterStatus] = useState("Tous");
   const [sortOption, setSortOption] = useState("titre");
 
-   // Sauvegarder les livres dans localStorage à chaque mise à jour
-  useEffect(() => {
-    if (books.length > 0) {
-      try {
-        localStorage.setItem("books", JSON.stringify(books));
-      } catch (error) {
-        console.error("Erreur lors de la sauvegarde dans localStorage :", error);
-      }
-    }
-  }, [books]);
-
-
-
   const handleAddBook = (newBook) => {
     if (
       newBook &&

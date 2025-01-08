@@ -4,8 +4,15 @@ import Home from './pages/Home';
 import Books from './pages/Books';
 import AddBook from './pages/AddBook';
 import Header from './components/Header';
+import SignUp from "./pages/SignUp";
+import Login from "./pages/Login";
+import PrivateRoute from "./components/PrivateRoute";
 import { AnimatePresence, motion } from "framer-motion";
+<<<<<<< HEAD
 import { BooksProvider } from "./context/BookContext";
+=======
+import Profile from "./pages/Profile";
+>>>>>>> main
 
 const App = () => {
   const location = useLocation();
@@ -34,6 +41,7 @@ const App = () => {
   const toggleTheme = () => setIsDarkMode((prev) => !prev);
 
   return (
+<<<<<<< HEAD
     <BooksProvider>
       <div className={`min-h-screen ${isDarkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900"}`}>
         <Header toggleTheme={toggleTheme} isDarkMode={isDarkMode} />
@@ -67,6 +75,68 @@ const App = () => {
         </AnimatePresence>
       </div>
     </BooksProvider>
+=======
+    <div className={`min-h-screen ${isDarkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900"}`}>
+      <Header toggleTheme={toggleTheme} isDarkMode={isDarkMode} />
+      <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
+          <Route
+            path="/"
+            element={
+              <PageTransition>
+                <Home books={books} />
+              </PageTransition>
+            }
+            
+          />
+          <Route path="/sign-up" 
+            element={
+              <PageTransition>
+              <SignUp />
+              </PageTransition>
+            } 
+          />
+          <Route path="/Login"
+          element={
+              <PageTransition>
+              <Login />
+              </PageTransition>
+            }
+          />
+          <Route
+            path="/books"
+            element={
+              <PrivateRoute>
+              <PageTransition>
+                <Books books={books} />
+              </PageTransition>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/add-book"
+            element={
+              <PrivateRoute>
+              <PageTransition>
+                <AddBook onAddBook={handleAddBook} />
+              </PageTransition>
+              </PrivateRoute>
+            }
+          />
+            <Route
+              path="/profile"
+              element={
+              <PrivateRoute>
+              <PageTransition>
+                <Profile />
+              </PageTransition>
+              </PrivateRoute>
+              }
+          />
+        </Routes>
+      </AnimatePresence>
+    </div>
+>>>>>>> main
   );
 };
 
