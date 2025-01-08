@@ -1,28 +1,24 @@
-import { useState, useEffect } from "react";
+import { useBooks } from "../context/BookContext";
+import { useEffect, useState } from "react";
 import BookList from "../components/BookList";
 
 const Books = () => {
-  const [books, setBooks] = useState([]);
+  const { books, setBooks } = useBooks();
   const [filterStatus, setFilterStatus] = useState("Tous");
   const [sortOption, setSortOption] = useState("titre");
 
-  // Charger les livres depuis localStorage au démarrage
-  useEffect(() => {
-    try {
-      const storedBooks = JSON.parse(localStorage.getItem("books")) || [];
-      setBooks(storedBooks);
-    } catch (error) {
-      console.error("Erreur lors du chargement des livres depuis localStorage:", error);
-      setBooks([]);
-    }
-  }, []);
-
-  // Sauvegarder les livres dans localStorage à chaque mise à jour
+   // Sauvegarder les livres dans localStorage à chaque mise à jour
   useEffect(() => {
     if (books.length > 0) {
-      localStorage.setItem("books", JSON.stringify(books));
+      try {
+        localStorage.setItem("books", JSON.stringify(books));
+      } catch (error) {
+        console.error("Erreur lors de la sauvegarde dans localStorage :", error);
+      }
     }
   }, [books]);
+
+
 
   const handleAddBook = (newBook) => {
     if (

@@ -5,31 +5,9 @@ import Books from './pages/Books';
 import AddBook from './pages/AddBook';
 import Header from './components/Header';
 import { AnimatePresence, motion } from "framer-motion";
+import { BooksProvider } from "./context/BookContext";
 
 const App = () => {
-  const [books, setBooks] = useState([]);
-
-  // Charger les livres depuis localStorage au démarrage
-  useEffect(() => {
-    try {
-      const storedBooks = JSON.parse(localStorage.getItem("books")) || [];
-      setBooks(storedBooks);
-    } catch (error) {
-      console.error("Erreur lors du chargement des livres depuis localStorage:", error);
-      setBooks([]);
-    }
-  }, []);
-
-  // Sauvegarder les livres dans localStorage à chaque mise à jour
-  useEffect(() => {
-    localStorage.setItem("books", JSON.stringify(books));
-  }, [books]);
-
-  // Ajouter un nouveau livre
-  const handleAddBook = (newBook) => {
-    setBooks((prevBooks) => [...prevBooks, newBook]);
-  };
-
   const location = useLocation();
   const [isDarkMode, setIsDarkMode] = useState(false);
 
@@ -56,37 +34,39 @@ const App = () => {
   const toggleTheme = () => setIsDarkMode((prev) => !prev);
 
   return (
-    <div className={`min-h-screen ${isDarkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900"}`}>
-      <Header toggleTheme={toggleTheme} isDarkMode={isDarkMode} />
-      <AnimatePresence mode="wait">
-        <Routes location={location} key={location.pathname}>
-          <Route
-            path="/"
-            element={
-              <PageTransition>
-                <Home books={books} />
-              </PageTransition>
-            }
-          />
-          <Route
-            path="/books"
-            element={
-              <PageTransition>
-                <Books books={books} />
-              </PageTransition>
-            }
-          />
-          <Route
-            path="/add-book"
-            element={
-              <PageTransition>
-                <AddBook onAddBook={handleAddBook} />
-              </PageTransition>
-            }
-          />
-        </Routes>
-      </AnimatePresence>
-    </div>
+    <BooksProvider>
+      <div className={`min-h-screen ${isDarkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900"}`}>
+        <Header toggleTheme={toggleTheme} isDarkMode={isDarkMode} />
+        <AnimatePresence mode="wait">
+          <Routes location={location} key={location.pathname}>
+            <Route
+              path="/"
+              element={
+                <PageTransition>
+                  <Home />
+                </PageTransition>
+              }
+            />
+            <Route
+              path="/books"
+              element={
+                <PageTransition>
+                  <Books />
+                </PageTransition>
+              }
+            />
+            <Route
+              path="/add-book"
+              element={
+                <PageTransition>
+                  <AddBook />
+                </PageTransition>
+              }
+            />
+          </Routes>
+        </AnimatePresence>
+      </div>
+    </BooksProvider>
   );
 };
 
