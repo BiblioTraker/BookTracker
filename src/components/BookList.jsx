@@ -1,6 +1,8 @@
 import { motion, AnimatePresence } from "framer-motion";
+import PropTypes from 'prop-types';
 
-function BookList({ books, onDeleteBook, onUpdateStatus }) {
+function BookList({books, deleteBook, onUpdateStatus}) {
+
   return (
     <div className="p-4">
       <h2 className="text-2xl font-bold mb-4">Ma Liste de Livres</h2>
@@ -9,7 +11,7 @@ function BookList({ books, onDeleteBook, onUpdateStatus }) {
           <AnimatePresence>
             {books.map((book) => (
               <motion.div
-                key={book.id}
+                key={book._id || book.id} // Utilise _id ou id comme clé
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 20 }}
@@ -25,14 +27,16 @@ function BookList({ books, onDeleteBook, onUpdateStatus }) {
                 <p className="text-gray-500 dark:text-white">Auteur : {book.author}</p>
                 <p className="text-gray-500 dark:text-white">Statut : {book.status}</p>
                 <div className="flex space-x-2 mt-4">
+                <button
+                  onClick={() => onUpdateStatus(book._id || book.id)} // Appelle la fonction passée en prop
+                  className="bg-yellow-500 text-white px-4 py-2 rounded"
+                >
+                  Changer Statut
+                </button>
+
+
                   <button
-                    onClick={() => onUpdateStatus(book.id)}
-                    className="bg-yellow-500 text-white px-4 py-2 rounded"
-                  >
-                    Changer Statut
-                  </button>
-                  <button
-                    onClick={() => onDeleteBook(book.id)}
+                    onClick={() => deleteBook(book._id)} // Utilise book._id
                     className="bg-red-500 text-white px-4 py-2 rounded"
                   >
                     Supprimer
@@ -48,5 +52,17 @@ function BookList({ books, onDeleteBook, onUpdateStatus }) {
     </div>
   );
 }
+BookList.propTypes = {
+  books: PropTypes.arrayOf(PropTypes.shape({
+    _id: PropTypes.string,
+    id: PropTypes.string,
+    cover: PropTypes.string,
+    title: PropTypes.string,
+    author: PropTypes.string,
+    status: PropTypes.string,
+  })).isRequired,
+  deleteBook: PropTypes.func.isRequired,
+  onUpdateStatus: PropTypes.func.isRequired,
+};
 
 export default BookList;

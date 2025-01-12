@@ -1,11 +1,10 @@
 import { useState } from "react";
-import axios from "axios";
 import { motion } from "framer-motion"; // Import Framer Motion
 import { useBooks } from "../context/BookContext";
 
 
 const AddBook = () => {
-  const { books, setBooks } = useBooks(); // Accéder au contexte global pour les livres
+  const { books, setBooks, addBook } = useBooks(); // Accéder au contexte global pour les livres
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false); // État pour le chargement
@@ -52,34 +51,50 @@ const AddBook = () => {
       cover: book.volumeInfo.imageLinks?.thumbnail || "",
       status: "À lire",
     };
-    setBooks((prevBooks) => [...prevBooks, newBook]);
-
+    addBook(newBook); // Appeler la fonction addBook du contexte
     // Afficher le message de succès
     setSuccessMessage(`Le livre "${newBook.title}" a été ajouté avec succès.`);
     setTimeout(() => setSuccessMessage(""), 3000); // Effacer le message après 3 secondes
   };
 
-  const handleAddManualBook = (e) => {
+  const handleAddManualBook = async (e) => {
     e.preventDefault();
     if (!manualBook.title.trim() || !manualBook.author.trim()) {
       alert("Le titre et l'auteur sont obligatoires.");
       return;
     }
+  
+    // Création du livre à ajouter
     const newBook = {
-      id: Date.now().toString(),
-      ...manualBook,
-    };
-    setBooks((prevBooks) => [...prevBooks, newBook]);
-    setSuccessMessage(`Le livre "${manualBook.title}" a été ajouté avec succès.`);
-    setManualBook({
-      title: "",
-      author: "",
-      genre: "",
-      cover: "",
+      title: manualBook.title,
+      author: manualBook.author,
+      genre: manualBook.genre || "Inconnu",
+      cover: manualBook.cover || "",
       status: "À lire",
-    });
-    setTimeout(() => setSuccessMessage(""), 3000);
+    };
+  
+    try {
+      // Ajouter le livre dans MongoDB via le contexte
+      await addBook(newBook);
+  
+      // Afficher le message de succès
+      setSuccessMessage(`Le livre "${newBook.title}" a été ajouté avec succès.`);
+      setManualBook({
+        title: "",
+        author: "",
+        genre: "",
+        cover: "",
+        status: "À lire",
+      });
+  
+      // Effacer le message après 3 secondes
+      setTimeout(() => setSuccessMessage(""), 3000);
+    } catch (error) {
+      console.error("Erreur lors de l'ajout manuel du livre :", error);
+      alert("Une erreur est survenue lors de l'ajout du livre.");
+    }
   };
+  
 
   return (
     <div className="p-4 mt-8 bg-white dark:bg-gray-700 dark:text-gray-200 rounded shadow-md">
