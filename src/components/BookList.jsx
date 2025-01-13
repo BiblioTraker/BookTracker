@@ -1,8 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
-function BookList({books, deleteBook, onUpdateStatus}) {
-
+function BookList({ books, deleteBook, onUpdateStatus }) {
   return (
     <div className="p-4">
       <h2 className="text-2xl font-bold mb-4">Ma Liste de Livres</h2>
@@ -11,7 +10,7 @@ function BookList({books, deleteBook, onUpdateStatus}) {
           <AnimatePresence>
             {books.map((book) => (
               <motion.div
-                key={book._id || book.id} // Utilise _id ou id comme clé
+                key={book._id || book.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 20 }}
@@ -28,19 +27,24 @@ function BookList({books, deleteBook, onUpdateStatus}) {
                 <p className="text-gray-500 dark:text-white">Statut : {book.status}</p>
                 <div className="flex space-x-2 mt-4">
                 <button
-                  onClick={() => onUpdateStatus(book._id || book.id)} // Appelle la fonction passée en prop
+                  onClick={() => {
+                    console.log("ID pour mise à jour du statut :", book._id || book.id);
+                    onUpdateStatus(book._id || book.id);
+                  }}
                   className="bg-yellow-500 text-white px-4 py-2 rounded"
                 >
                   Changer Statut
                 </button>
 
-
-                  <button
-                    onClick={() => deleteBook(book._id)} // Utilise book._id
-                    className="bg-red-500 text-white px-4 py-2 rounded"
-                  >
-                    Supprimer
-                  </button>
+                <button
+                  onClick={() => {
+                    console.log("ID pour suppression :", book._id || book.id);
+                    deleteBook(book._id || book.id);
+                  }}
+                  className="bg-red-500 text-white px-4 py-2 rounded"
+                >
+                  Supprimer
+                </button>
                 </div>
               </motion.div>
             ))}
@@ -52,17 +56,21 @@ function BookList({books, deleteBook, onUpdateStatus}) {
     </div>
   );
 }
+
 BookList.propTypes = {
-  books: PropTypes.arrayOf(PropTypes.shape({
-    _id: PropTypes.string,
-    id: PropTypes.string,
-    cover: PropTypes.string,
-    title: PropTypes.string,
-    author: PropTypes.string,
-    status: PropTypes.string,
-  })).isRequired,
+  books: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string,
+      id: PropTypes.string,
+      cover: PropTypes.string,
+      title: PropTypes.string,
+      author: PropTypes.string,
+      status: PropTypes.string,
+    })
+  ).isRequired,
   deleteBook: PropTypes.func.isRequired,
   onUpdateStatus: PropTypes.func.isRequired,
 };
 
 export default BookList;
+

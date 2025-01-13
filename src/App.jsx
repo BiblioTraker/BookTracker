@@ -6,6 +6,10 @@ import AddBook from './pages/AddBook';
 import Header from './components/Header';
 import { AnimatePresence, motion } from "framer-motion";
 import { BooksProvider } from "./context/BookContext";
+import { AuthProvider } from "./context/AuthContext";
+import Login from "./pages/Login"; // Nouvelle page Login
+import Register from "./pages/Register"; // Nouvelle page Register
+import PrivateRoute from "./components/PrivateRoute"; // Importer PrivateRoute
 
 
 const App = () => {
@@ -35,6 +39,7 @@ const App = () => {
   const toggleTheme = () => setIsDarkMode((prev) => !prev);
 
   return (
+    <AuthProvider>
     <BooksProvider>
       <div className={`min-h-screen ${isDarkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900"}`}>
         <Header toggleTheme={toggleTheme} isDarkMode={isDarkMode} />
@@ -48,26 +53,49 @@ const App = () => {
                 </PageTransition>
               }
             />
+            {/* Routes pour l'authentification */}
+            <Route
+              path="/login"
+              element={
+                <PageTransition>
+                  <Login />
+                </PageTransition>
+              }
+            />
+            <Route
+              path="/register"
+              element={
+                <PageTransition>
+                  <Register />
+                </PageTransition>
+              }
+            />
+            {/* Routes protégées */}
             <Route
               path="/books"
               element={
-                <PageTransition>
-                  <Books />
-                </PageTransition>
+                <PrivateRoute>
+                  <PageTransition>
+                    <Books />
+                  </PageTransition>
+                </PrivateRoute>
               }
             />
             <Route
               path="/add-book"
               element={
-                <PageTransition>
-                  <AddBook />
-                </PageTransition>
+                <PrivateRoute>
+                  <PageTransition>
+                    <AddBook />
+                  </PageTransition>
+                </PrivateRoute>
               }
             />
           </Routes>
         </AnimatePresence>
       </div>
     </BooksProvider>
+    </AuthProvider>
   );
 };
 

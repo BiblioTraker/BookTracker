@@ -25,3 +25,11 @@ app.use('/api/books', require('./routes/bookRoutes'));
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
+
+const authRoutes = require("./routes/authRoutes");
+
+// Middleware pour parser le JSON
+app.use(express.json());
+
+// Routes d'authentification
+app.use("/api/auth", authRoutes);
