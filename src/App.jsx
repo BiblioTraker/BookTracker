@@ -39,8 +39,8 @@ const App = () => {
   const toggleTheme = () => setIsDarkMode((prev) => !prev);
 
   return (
-    <AuthProvider>
     <BooksProvider>
+    <AuthProvider>
       <div className={`min-h-screen ${isDarkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900"}`}>
         <Header toggleTheme={toggleTheme} isDarkMode={isDarkMode} />
         <AnimatePresence mode="wait">
@@ -94,8 +94,8 @@ const App = () => {
           </Routes>
         </AnimatePresence>
       </div>
+      </AuthProvider>
     </BooksProvider>
-    </AuthProvider>
   );
 };
 

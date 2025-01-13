@@ -1,24 +1,37 @@
-import React, { useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Moon, Sun, Library } from 'lucide-react';
-import AuthContext from '../context/AuthContext'; // Importer le contexte AuthContext
+import { useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Moon, Sun, Library } from "lucide-react";
+import AuthContext from "../context/AuthContext"; // Importer le contexte AuthContext
+import { useBooks } from "../context/BookContext"; // Importer le contexte des livres
 
 function Header({ toggleTheme, isDarkMode }) {
   const navigate = useNavigate();
   const { user, logout } = useContext(AuthContext); // Récupérer l'utilisateur et la fonction logout
+  const { resetBooks } = useBooks(); // Utiliser resetBooks pour vider les livres
+
+  const handleLogout = () => {
+    logout(); // Déconnecte l'utilisateur
+    localStorage.clear(); // Supprime toutes les données du localStorage
+    resetBooks(); // Réinitialise les livres
+    navigate("/login"); // Redirige vers la page de connexion
+  };
 
   return (
     <header className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg dark:from-purple-800 dark:to-indigo-800">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
+          {/* Logo et lien vers la page d'accueil */}
           <div className="flex items-center space-x-4">
             <Library className="w-8 h-8" />
             <Link to="/" className="text-xl font-bold hover:underline">
               BiblioTracker
             </Link>
           </div>
+
+          {/* Navigation */}
           <nav className="p-4">
             <ul className="flex justify-between items-center">
+              {/* Liens vers les sections Mes Livres et Ajouter un Livre */}
               <div className="flex space-x-4">
                 <li>
                   <Link to="/books" className="hover:underline">
@@ -38,10 +51,7 @@ function Header({ toggleTheme, isDarkMode }) {
                   <div className="flex items-center space-x-4">
                     <span className="text-sm">Bienvenue, {user.name}!</span>
                     <button
-                      onClick={() => {
-                        logout(); // Supprime l'utilisateur du contexte et de localStorage
-                        navigate('/login'); // Redirige vers la page de connexion
-                      }}
+                      onClick={handleLogout}
                       className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
                     >
                       Déconnexion
@@ -56,7 +66,8 @@ function Header({ toggleTheme, isDarkMode }) {
                   </Link>
                 )}
               </div>
-                {/* Bouton pour basculer le thème */}
+
+              {/* Bouton pour basculer le thème */}
               <button
                 onClick={toggleTheme}
                 className="p-2 ml-4 rounded-lg text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
@@ -76,3 +87,5 @@ function Header({ toggleTheme, isDarkMode }) {
 }
 
 export default Header;
+
+

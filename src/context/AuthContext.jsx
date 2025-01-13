@@ -1,15 +1,18 @@
 import { createContext, useState, useEffect } from "react";
+import { useBooks } from "./BookContext";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const { fetchBooks } = useBooks(); // Importer fetchBooks depuis BookContext
 
   // Charger les données utilisateur depuis le localStorage au chargement
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       setUser(JSON.parse(storedUser));
+      fetchBooks(); // Charger les livres pour l'utilisateur stocké
     }
   }, []);
 
@@ -17,6 +20,7 @@ export const AuthProvider = ({ children }) => {
   const login = (userData) => {
     localStorage.setItem("user", JSON.stringify(userData));
     setUser(userData);
+    fetchBooks(); // Charger les livres après la connexion
   };
 
   // Déconnexion d'un utilisateur
@@ -33,3 +37,4 @@ export const AuthProvider = ({ children }) => {
 };
 
 export default AuthContext;
+

@@ -16,6 +16,11 @@ export const BooksProvider = ({ children }) => {
         ? JSON.parse(localStorage.getItem("user")).token
         : null;
 
+      if (!token) {
+        setBooks([]); // Réinitialise les livres si aucun token n'est présent
+        return;
+      }
+
       const config = {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -27,6 +32,7 @@ export const BooksProvider = ({ children }) => {
       console.log("Livres récupérés depuis le backend :", response.data);
     } catch (error) {
       console.error("Erreur lors de la récupération des livres :", error);
+      setBooks([]); // Réinitialise les livres en cas d'erreur
     }
   };
 
@@ -56,17 +62,16 @@ export const BooksProvider = ({ children }) => {
           Authorization: `Bearer ${token}`,
         },
       };
-  
+
       console.log("URL de suppression :", `${API_URL}/api/books/${id}`);
       await axios.delete(`${API_URL}/api/books/${id}`, config);
-  
+
       setBooks((prevBooks) => prevBooks.filter((book) => book._id !== id));
       console.log("Livre supprimé avec succès !");
     } catch (error) {
       console.error("Erreur lors de la suppression du livre :", error);
     }
   };
-  
 
   // Mettre à jour le statut d'un livre
   const updateBookStatus = async (id, newStatus) => {
@@ -78,14 +83,14 @@ export const BooksProvider = ({ children }) => {
           "Content-Type": "application/json",
         },
       };
-  
+
       console.log("URL de mise à jour :", `${API_URL}/api/books/${id}`);
       const response = await axios.put(
         `${API_URL}/api/books/${id}`,
         { status: newStatus },
         config
       );
-  
+
       setBooks((prevBooks) =>
         prevBooks.map((book) =>
           book._id === id ? { ...book, status: response.data.status } : book
@@ -95,10 +100,15 @@ export const BooksProvider = ({ children }) => {
       console.error("Erreur lors de la mise à jour du statut :", error);
     }
   };
-  
+
+  // Réinitialiser les livres (lors de la déconnexion)
+  const resetBooks = () => {
+    setBooks([]);
+    console.log("Livres réinitialisés.");
+  };
 
   useEffect(() => {
-    fetchBooks();
+    fetchBooks(); // Charger les livres lors du montage
   }, []);
 
   return (
@@ -106,14 +116,14 @@ export const BooksProvider = ({ children }) => {
       value={{
         books,
         setBooks,
+        fetchBooks,
         addBook,
         deleteBook,
         updateBookStatus,
+        resetBooks, // Ajout de la fonction pour réinitialiser les livres
       }}
     >
       {children}
     </BooksContext.Provider>
   );
 };
-
-
