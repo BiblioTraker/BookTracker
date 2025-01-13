@@ -32,18 +32,6 @@ function Header({ toggleTheme, isDarkMode }) {
                 </li>
               </div>
 
-              {/* Bouton pour basculer le thème */}
-              <button
-                onClick={toggleTheme}
-                className="p-2 ml-4 rounded-lg text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
-              >
-                {isDarkMode ? (
-                  <Moon className="w-5 h-5" />
-                ) : (
-                  <Sun className="w-5 h-5" />
-                )}
-              </button>
-
               {/* Section connexion/déconnexion */}
               <div className="ml-4">
                 {user ? (
@@ -68,7 +56,17 @@ function Header({ toggleTheme, isDarkMode }) {
                   </Link>
                 )}
               </div>
-
+                {/* Bouton pour basculer le thème */}
+              <button
+                onClick={toggleTheme}
+                className="p-2 ml-4 rounded-lg text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
+              >
+                {isDarkMode ? (
+                  <Moon className="w-5 h-5" />
+                ) : (
+                  <Sun className="w-5 h-5" />
+                )}
+              </button>
             </ul>
           </nav>
         </div>
