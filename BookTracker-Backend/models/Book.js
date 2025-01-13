@@ -9,7 +9,8 @@ const bookSchema = new mongoose.Schema({
     enum: ['À lire', 'En cours', 'Lu'], // Limite les valeurs acceptées
     default: 'À lire',
   },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // Lien avec l'utilisateur
 });
 
-
 module.exports = mongoose.model('Book', bookSchema);
+
