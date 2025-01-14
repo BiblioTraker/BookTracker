@@ -121,7 +121,7 @@ const AddBook = () => {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
-          className="bg-green-100 text-green-800 p-2 rounded my-4"
+          className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-100 text-green-800 p-3 rounded shadow-lg z-50"
         >
           {successMessage}
         </motion.div>

@@ -6,6 +6,7 @@ const Books = () => {
   const { books, deleteBook, updateBookStatus } = useBooks();
   const [filterStatus, setFilterStatus] = useState("Tous");
   const [sortOption, setSortOption] = useState("titre");
+  const [searchTerm, setSearchTerm] = useState(""); // Ajout de l'état pour la recherche
 
   const handleFilterChange = (e) => {
     setFilterStatus(e.target.value);
@@ -15,9 +16,16 @@ const Books = () => {
     setSortOption(e.target.value);
   };
 
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value); // Met à jour le terme de recherche
+  };
+
+  // Filtrer les livres par statut et terme de recherche
   const filteredBooks = books.filter((book) => {
-    if (filterStatus === "Tous") return true;
-    return book.status === filterStatus;
+    const matchesSearch = book.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          book.author.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = filterStatus === "Tous" || book.status === filterStatus;
+    return matchesSearch && matchesStatus;
   });
 
   const sortedBooks = [...filteredBooks].sort((a, b) => {
@@ -34,27 +42,38 @@ const Books = () => {
       console.error("Erreur lors de la suppression du livre :", error);
     }
   };
-  
+
   const handleUpdateStatus = async (id) => {
     const book = books.find((book) => book._id === id || book.id === id);
     if (!book) {
       console.error("Livre introuvable pour cet ID :", id);
       return;
     }
-  
+
     let newStatus;
     if (book.status === "À lire") newStatus = "En cours";
     else if (book.status === "En cours") newStatus = "Lu";
     else newStatus = "À lire";
-  
+
     console.log("Mise à jour du statut pour l'ID :", id, "Nouveau statut :", newStatus);
     await updateBookStatus(id, newStatus);
   };
-  
 
   return (
     <div>
       <div className="p-4">
+        {/* Barre de recherche */}
+        <div className="mb-4">
+          <input
+            type="text"
+            placeholder="Rechercher par titre ou auteur..."
+            value={searchTerm}
+            onChange={handleSearchChange}
+            className="border border-gray-300 rounded p-2 w-full dark:text-black"
+          />
+        </div>
+
+        {/* Filtres et tri */}
         <div className="flex justify-between items-center mb-4 dark:text-black">
           <select
             value={filterStatus}
@@ -75,6 +94,8 @@ const Books = () => {
             <option value="auteur">Auteur</option>
           </select>
         </div>
+
+        {/* Liste des livres */}
         <BookList
           books={sortedBooks}
           deleteBook={handleDeleteBook}

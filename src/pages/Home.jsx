@@ -1,6 +1,5 @@
 import { useBooks } from "../context/BookContext";
 import Statistics from "../components/Statistics";
-import { Link } from "react-router-dom";
 
 const Home = () => {
   const { books } = useBooks();
