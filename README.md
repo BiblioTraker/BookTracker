@@ -1,100 +1,106 @@
 # BookTracker 📚
 
 ## Description
-**BiblioTracker** est une application web interactive qui vous permet de suivre vos lectures, gérer vos livres, et enregistrer vos impressions. Avec une interface intuitive et des fonctionnalités avancées, BookTracker est l'outil idéal pour les amateurs de livres souhaitant organiser leur bibliothèque personnelle.
+**BiblioTracker** est une application web interactive qui permet de suivre vos lectures, gérer vos livres et visualiser vos progrès de lecture. Avec son interface intuitive et ses fonctionnalités avancées, BiblioTracker est l'outil idéal pour organiser votre bibliothèque personnelle.
 
 ## Fonctionnalités principales 🚀
 
 ### Gestion des livres
-- **Ajouter des livres** : 
+- **Ajouter des livres** :
   - Manuellement en renseignant le titre, l'auteur, et d'autres détails.
   - Automatiquement via l'API Google Books.
-- **Organiser les livres** : 
-  - Statuts : "Lu", "En cours", ou "À lire".
+- **Statuts personnalisables** :
+  - "Lu", "En cours", ou "À lire".
+- **Rechercher des livres** :
+  - Recherche locale par titre ou auteur.
+  - Recherche avancée avec l'API Google Books.
 
 ### Profil utilisateur
-- Créez un compte ou connectez-vous pour accéder à vos données.
-- Ajoutez un avatar et personnalisez votre profil.
+- Création de compte et connexion sécurisée.
+- Gestion individuelle des bibliothèques selon les utilisateurs connectés.
 
-### Recherche et filtres
-- Recherchez des livres par titre ou auteur.
-- Filtrez vos livres par statut, titre, auteur ou genre.
+### Tableau de bord et statistiques
+- **Vue d'ensemble des habitudes de lecture** :
+  - Nombre total de livres par statut.
+  - Diagramme circulaire interactif pour visualiser les données.
+- Mise à jour en temps réel des statistiques après chaque ajout ou suppression.
 
-### Tableau de bord
-- Vue d'ensemble des statistiques de lecture :
-  - Nombre de livres dans chaque statut.
-  - Graphiques interactifs pour visualiser vos habitudes de lecture.
+### Expérience utilisateur
+- Mode sombre/clair configurable.
+- Design responsive, compatible avec les mobiles (375x744) et tablettes (768x744).
 
 ## Technologie utilisée 🛠️
 
 ### Frontend
-- **React.js**
-- **React Router** : Navigation entre les pages.
-- **Tailwind CSS** : Design moderne et responsive.
-- **Framer Motion** : Animations fluides et interactives.
+- **React.js** : Interface utilisateur dynamique et moderne.
+- **React Router** : Gestion de la navigation.
+- **Tailwind CSS** : Style responsive et adaptable.
+- **Framer Motion** : Animations interactives.
 
 ### Backend
-- **Firebase** :
-  - Authentication : Gestion des comptes utilisateurs.
-  - Firestore : Base de données pour stocker les livres et profils utilisateurs.
+- **Node.js avec Express** : API REST pour gérer les utilisateurs et les livres.
+- **MongoDB avec Mongoose** : Stockage des livres et des profils utilisateurs.
+- **JWT (JSON Web Token)** : Authentification sécurisée.
 
 ### API
-- **Google Books API** : Recherche et récupération des informations sur les livres.
+- **Google Books API** : Recherche avancée pour enrichir les données des livres.
 
 ## Installation 💻
 
 ### Prérequis
 - Node.js et npm/yarn installés.
-- Un compte Firebase avec les services Firestore et Authentication activés.
+- MongoDB configuré et en cours d'exécution.
 
 ### Étapes
 1. Clonez le projet :
    ```bash
-   git clone https://github.com/your-username/booktracker.git
+   git clone https://github.com/ValH-code/BookTracker.git
    ```
 2. Accédez au dossier du projet :
    ```bash
-   cd booktracker
+   cd BookTracker
    ```
-3. Installez les dépendances :
+3. Installez les dépendances pour le frontend et le backend :
    ```bash
-   npm install
-   # ou avec Yarn
+   cd frontend
+   yarn install
+   cd ../backend
    yarn install
    ```
-4. Configurez Firebase :
-   - Créez un fichier `.env` à la racine du projet.
-   - Ajoutez les variables d'environnement Firebase :
+4. Configurez les variables d'environnement :
+   - Créez un fichier `.env` dans le dossier `backend` et ajoutez les informations suivantes :
      ```env
-     REACT_APP_FIREBASE_API_KEY=your_api_key
-     REACT_APP_FIREBASE_AUTH_DOMAIN=your_auth_domain
-     REACT_APP_FIREBASE_PROJECT_ID=your_project_id
-     REACT_APP_FIREBASE_STORAGE_BUCKET=your_storage_bucket
-     REACT_APP_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
-     REACT_APP_FIREBASE_APP_ID=your_app_id
+     PORT=5000
+     MONGO_URI=your_mongodb_connection_string
+     JWT_SECRET=your_jwt_secret_key
+     GOOGLE_BOOKS_API_KEY=your_google_books_api_key
      ```
-5. Lancez l'application en mode développement :
+5. Lancez le backend :
    ```bash
-   npm start
-   # ou avec Yarn
+   cd backend
    yarn start
    ```
-6. Accédez à l'application :
-   - Ouvrez [http://localhost:3000](http://localhost:3000) dans votre navigateur.
+6. Lancez le frontend :
+   ```bash
+   cd frontend
+   yarn start
+   ```
+7. Accédez à l'application :
+   - Ouvrez [http://localhost:5173](http://localhost:5173) dans votre navigateur.
 
 ## Contribution 🤝
 
-Les contributions sont les bienvenues ! Voici comment contribuer :
+Les contributions sont les bienvenues ! Voici comment vous pouvez contribuer :
 1. Forkez le projet.
 2. Créez une branche pour votre fonctionnalité :
    ```bash
    git checkout -b feature/nom-de-la-fonctionnalite
    ```
-3. Faites vos modifications et commitez-les :
+3. Apportez vos modifications et commitez-les :
    ```bash
    git commit -m "Ajout de la fonctionnalité X"
    ```
-4. Poussez les changements :
+4. Poussez vos changements :
    ```bash
    git push origin feature/nom-de-la-fonctionnalite
    ```
@@ -103,15 +109,20 @@ Les contributions sont les bienvenues ! Voici comment contribuer :
 ## Aperçu 🎥
 
 ### Page d'accueil
-![BookTracker-12-31-2024_03_22_AM](https://github.com/user-attachments/assets/890b44df-9b73-4805-8f2b-9fb1a6ad474a)
+![Page d'accueil](https://github.com/user-attachments/assets/0ab2fda2-dbd6-4cab-b1ec-f35a72ae749a)
+
 
 ### Page de gestion des livres
-![BookTracker-12-31-2024_03_22_AM (1)](https://github.com/user-attachments/assets/cc304529-4033-4cf6-90d5-c2a0d6a09a71)
+![Page des livres](https://github.com/user-attachments/assets/f4d0118a-aed4-4a42-bc95-a84344069f9e)
 
-### Page d'ajout de livre
-![BookTracker-12-31-2024_03_23_AM](https://github.com/user-attachments/assets/598005de-d923-491c-98db-a4bec298bb26))
+
+### Recherche de livre
+![Recherche](https://github.com/user-attachments/assets/2dadabdf-9227-4d72-91fe-f2dc8b7688ac)
+
 
 ---
 
-**Suivez vos lectures et organisez votre bibliothèque avec BiblioTracker !** 📖✨
+**Organisez votre bibliothèque et suivez vos lectures avec BiblioTracker !** 📖✨
+
+
 
