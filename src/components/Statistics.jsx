@@ -20,14 +20,14 @@ function Statistics({ books }) {
   return (
     <div className="p-4 bg-gray-100 rounded-md shadow-md flex justify-center dark:bg-gray-900">
       <h2 className="text-2xl font-bold mb-4">Statistiques</h2>
-      <PieChart width={400} height={300}>
+      <PieChart width={600} height={450}>
         <Pie
           data={data}
           dataKey="value"
           nameKey="name"
           cx="50%"
           cy="50%"
-          outerRadius={100}
+          outerRadius={150}
           fill="#8884d8"
           label
         >

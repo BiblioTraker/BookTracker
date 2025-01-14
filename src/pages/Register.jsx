@@ -5,33 +5,39 @@ const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [message, setMessage] = useState(null); // Ajout d'un état pour le message
+  const [messageType, setMessageType] = useState(""); // "success" ou "error"
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     try {
       const response = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password }),
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json(); // Récupérer l'erreur du backend
-        alert(errorData.message || "Erreur lors de l'inscription.");
+        setMessage(errorData.message || "Erreur lors de l'inscription.");
+        setMessageType("error");
         return;
       }
-  
+
       const data = await response.json(); // Traiter la réponse valide
-      alert("Inscription réussie ! Vous pouvez maintenant vous connecter.");
-      navigate("/login");
+      setMessage("Inscription réussie ! Vous pouvez maintenant vous connecter.");
+      setMessageType("success");
+
+      // Rediriger après un court délai
+      setTimeout(() => navigate("/login"), 3000);
     } catch (error) {
       console.error("Erreur réseau :", error);
-      alert("Impossible de se connecter au serveur. Veuillez réessayer plus tard.");
+      setMessage("Impossible de se connecter au serveur. Veuillez réessayer plus tard.");
+      setMessageType("error");
     }
   };
-  
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-800">
@@ -39,6 +45,18 @@ const Register = () => {
         <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6 text-center">
           Inscription
         </h2>
+
+        {/* Affichage des messages */}
+        {message && (
+          <div
+            className={`mb-4 p-3 rounded ${
+              messageType === "success" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+            }`}
+          >
+            {message}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label
