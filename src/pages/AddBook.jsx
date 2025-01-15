@@ -15,7 +15,7 @@ const AddBook = () => {
     cover: "",
     status: "À lire",
   });
-  const API_KEY = import.meta.env.VITE_API_KEY; // Récupère la clé depuis .env
+  const API_KEY = import.meta.env.VITE_GOOGLE_BOOKS_API_KEY; // Récupère la clé depuis .env
 
   useEffect(() => {
     // Débouncing pour la recherche
