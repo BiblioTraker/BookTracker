@@ -22,8 +22,8 @@ mongoose.connect(process.env.MONGO_URI, {
 app.use('/api/books', require('./routes/bookRoutes'));
 
 // Démarrer le serveur
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running on port ${PORT}`);
 });
 
 const authRoutes = require("./routes/authRoutes");
