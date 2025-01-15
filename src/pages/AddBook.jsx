@@ -99,7 +99,7 @@ const AddBook = () => {
   };
 
   return (
-    <div className="p-4 mt-8 bg-white dark:bg-gray-700 dark:text-gray-200 rounded shadow-md">
+    <div className="p-4 mt-8 bg-white dark:bg-gray-700 dark:text-gray-200 rounded shadow-md mx-4 sm:mx-8 md:mx-16 lg:mx-32">
       <h2 className="text-2xl font-bold mb-4">Ajouter un Livre</h2>
       {/* Recherche de livres */}
       <div className="mb-4">
@@ -113,9 +113,7 @@ const AddBook = () => {
           className="border border-gray-300 rounded p-2 w-full dark:text-black"
         />
       </div>
-      {/* Barre de chargement */}
       {isLoading && <p className="text-gray-500">Recherche en cours...</p>}
-      {/* Message de succès */}
       {successMessage && (
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -158,7 +156,6 @@ const AddBook = () => {
           </motion.div>
         ))}
       </motion.div>
-      {/* Formulaire d'ajout manuel */}
       <div className="mt-8">
         <h3 className="text-xl font-bold mb-4">Ajouter un Livre Manuellement</h3>
         <form onSubmit={handleAddManualBook} className="space-y-4">
