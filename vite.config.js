@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "http://localhost:5000", // Remplacez par le port de votre backend
+        target: "https://booktracker-backend.onrender.com", // Remplacez par le port de votre backend
         changeOrigin: true,
       },
     },
