@@ -49,7 +49,7 @@ function Header({ toggleTheme, isDarkMode }) {
               <div className="ml-4">
                 {user ? (
                   <div className="flex items-center space-x-4">
-                    <span className="text-sm">Bienvenue, {user.name}!</span>
+                    <span className="text-sm">Bienvenue, {user.name} !</span>
                     <button
                       onClick={handleLogout}
                       className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
