@@ -1,10 +1,15 @@
 import { useState, useContext } from "react";
 import AuthContext from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [emailAutoComplete, setEmailAutoComplete] = useState("off");
+  const [passwordAutoComplete, setPasswordAutoComplete] = useState("off");
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -27,65 +32,121 @@ const Login = () => {
     }
   };
 
+  const handleGoogleSuccess = async (response) => {
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/google`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: response.credential }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        login(data); // Stocke les données utilisateur dans le contexte
+        navigate("/"); // Redirige vers la page d'accueil
+      } else {
+        alert(data.message); // Affiche un message d'erreur
+      }
+    } catch (error) {
+      console.error("Erreur réseau :", error);
+      alert("Impossible de se connecter au serveur. Veuillez réessayer plus tard.");
+    }
+  };
+
+  const handleGoogleFailure = (error) => {
+    console.error("Erreur de connexion Google :", error);
+    alert("Erreur lors de la connexion avec Google. Veuillez réessayer.");
+  };
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-800">
-      <div className="w-full max-w-md bg-white dark:bg-gray-900 rounded-lg shadow-md p-6">
-        <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6 text-center">
-          Connexion
-        </h2>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+      <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-800">
+        <div className="w-full max-w-md bg-white dark:bg-gray-900 rounded-lg shadow-md p-6">
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6 text-center">
+            Connexion
+          </h2>
+          <form onSubmit={handleSubmit}>
+            <div className="mb-4">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
+                Email
+              </label>
+              <input
+                type="email"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                onFocus={() => setEmailAutoComplete("on")}
+                autoComplete={emailAutoComplete}
+                className="mt-1 block w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-gray-300"
+                required
+              />
+            </div>
+            <div className="mb-4 relative">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
+                Mot de passe
+              </label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  onFocus={() => setPasswordAutoComplete("on")}
+                  autoComplete={passwordAutoComplete}
+                  className="mt-1 block w-full pl-10 px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-gray-300"
+                  required
+                />
+                <div
+                  className="absolute inset-y-0 left-0 pl-3 flex items-center cursor-pointer"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </div>
+              </div>
+            </div>
+            <button
+              type="submit"
+              className="w-full bg-indigo-500 text-white py-2 px-4 rounded-md hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 block w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-gray-300"
-              required
+              Se connecter
+            </button>
+          </form>
+          <div className="mt-4">
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onFailure={handleGoogleFailure}
+              buttonText="Se connecter avec Google"
+              className="w-full flex justify-center"
             />
           </div>
-          <div className="mb-6">
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+          <p className="mt-4 text-sm text-center text-gray-600 dark:text-gray-400">
+            <a
+              href="/forgot-password"
+              className="text-indigo-500 hover:underline dark:text-indigo-400"
             >
-              Mot de passe
-            </label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 block w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-gray-300"
-              required
-            />
-          </div>
-          <button
-            type="submit"
-            className="w-full bg-indigo-500 text-white py-2 px-4 rounded-md hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-          >
-            Se connecter
-          </button>
-        </form>
-        <p className="mt-4 text-sm text-center text-gray-600 dark:text-gray-400">
-          Pas encore de compte ?{" "}
-          <a
-            href="/register"
-            className="text-indigo-500 hover:underline dark:text-indigo-400"
-          >
-            S'inscrire
-          </a>
-        </p>
+              Mot de passe oublié ?
+            </a>
+          </p>
+          <p className="mt-4 text-sm text-center text-gray-600 dark:text-gray-400">
+            Vous n'avez pas de compte ?{" "}
+            <a
+              href="/register"
+              className="text-indigo-500 hover:underline dark:text-indigo-400"
+            >
+              S'inscrire
+            </a>
+          </p>
+        </div>
       </div>
-    </div>
+    </GoogleOAuthProvider>
   );
 };
-
 
 export default Login;
