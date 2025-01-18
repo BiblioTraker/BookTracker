@@ -127,3 +127,5 @@ export const BooksProvider = ({ children }) => {
     </BooksContext.Provider>
   );
 };
+
+export default BooksContext;
