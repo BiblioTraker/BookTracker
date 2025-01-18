@@ -1,99 +1,47 @@
-import { useState, useEffect } from "react";
-import { Routes, Route, useLocation } from 'react-router-dom';
-import Home from './pages/Home';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
+import AuthProvider from './context/AuthContext';
+import BooksProvider from './context/BookContext';
+import PrivateRoute from './components/PrivateRoute';
 import Books from './pages/Books';
 import AddBook from './pages/AddBook';
-import Header from './components/Header';
-import { AnimatePresence, motion } from "framer-motion";
-import { BooksProvider } from "./context/BookContext";
-import { AuthProvider } from "./context/AuthContext";
-import Login from "./pages/Login"; // Nouvelle page Login
-import Register from "./pages/Register"; // Nouvelle page Register
-import PrivateRoute from "./components/PrivateRoute"; // Importer PrivateRoute
-
+import Login from './pages/Login';
+import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword'; // Importez le composant ForgotPassword
 
 const App = () => {
-  const location = useLocation();
-  const [isDarkMode, setIsDarkMode] = useState(false);
-
-  // Charger le thème depuis localStorage
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme === "dark") {
-      setIsDarkMode(true);
-      document.documentElement.classList.add("dark");
-    }
-  }, []);
-
-  // Sauvegarder le thème dans localStorage
-  useEffect(() => {
-    if (isDarkMode) {
-      localStorage.setItem("theme", "dark");
-      document.documentElement.classList.add("dark");
-    } else {
-      localStorage.setItem("theme", "light");
-      document.documentElement.classList.remove("dark");
-    }
-  }, [isDarkMode]);
-
-  const toggleTheme = () => setIsDarkMode((prev) => !prev);
-
   return (
     <BooksProvider>
-    <AuthProvider>
-      <div className={`min-h-screen ${isDarkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900"}`}>
-        <Header toggleTheme={toggleTheme} isDarkMode={isDarkMode} />
-        <AnimatePresence mode="wait">
-          <Routes location={location} key={location.pathname}>
-            <Route
-              path="/"
-              element={
-                <PageTransition>
-                  <Home />
-                </PageTransition>
-              }
-            />
-            {/* Routes pour l'authentification */}
-            <Route
-              path="/login"
-              element={
-                <PageTransition>
-                  <Login />
-                </PageTransition>
-              }
-            />
-            <Route
-              path="/register"
-              element={
-                <PageTransition>
-                  <Register />
-                </PageTransition>
-              }
-            />
-            {/* Routes protégées */}
-            <Route
-              path="/books"
-              element={
-                <PrivateRoute>
-                  <PageTransition>
-                    <Books />
-                  </PageTransition>
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/add-book"
-              element={
-                <PrivateRoute>
-                  <PageTransition>
-                    <AddBook />
-                  </PageTransition>
-                </PrivateRoute>
-              }
-            />
-          </Routes>
-        </AnimatePresence>
-      </div>
+      <AuthProvider>
+        <div className="App">
+          <AnimatePresence exitBeforeEnter>
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} /> {/* Ajoutez cette ligne */}
+              <Route
+                path="/books"
+                element={
+                  <PrivateRoute>
+                    <PageTransition>
+                      <Books />
+                    </PageTransition>
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/add-book"
+                element={
+                  <PrivateRoute>
+                    <PageTransition>
+                      <AddBook />
+                    </PageTransition>
+                  </PrivateRoute>
+                }
+              />
+            </Routes>
+          </AnimatePresence>
+        </div>
       </AuthProvider>
     </BooksProvider>
   );
