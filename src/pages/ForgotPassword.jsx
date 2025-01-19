@@ -7,18 +7,27 @@ const ForgotPassword = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/forgot-password`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
-    });
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/proxy`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          url: `${import.meta.env.VITE_API_URL}/api/auth/forgot-password`,
+          method: "POST",
+          data: { email },
+        }),
+      });
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (response.ok) {
-      setMessage("Un email de réinitialisation a été envoyé.");
-    } else {
-      setMessage(data.message);
+      if (response.ok) {
+        setMessage("Un email de réinitialisation a été envoyé.");
+      } else {
+        setMessage(data.message || "Une erreur est survenue.");
+      }
+    } catch (error) {
+      console.error("Erreur réseau :", error);
+      setMessage("Erreur lors de la requête. Veuillez réessayer plus tard.");
     }
   };
 
