@@ -11,6 +11,7 @@ import Login from "./pages/Login"; // Nouvelle page Login
 import Register from "./pages/Register"; // Nouvelle page Register
 import PrivateRoute from "./components/PrivateRoute"; // Importer PrivateRoute
 import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from "./pages/ResetPassword";
 
 
 const App = () => {
@@ -78,6 +79,11 @@ const App = () => {
                 <ForgotPassword />
               </PageTransition>
             }
+            />
+            <Route 
+            path="/reset-password/:token" 
+            element={<ResetPassword />
+            } 
             />
             {/* Routes protégées */}
             <Route
