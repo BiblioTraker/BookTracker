@@ -9,6 +9,8 @@ export default defineConfig({
       "/api": {
         target: "https://booktracker-backend.onrender.com", // Remplacez par le port de votre backend
         changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/api/, ''),
       },
     },
   },
