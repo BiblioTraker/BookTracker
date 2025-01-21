@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import PropTypes from "prop-types";
-import ReactStars from "react-rating-stars-component";
+import ReactStars from 'react-rating-stars-component';
 
 function BookList({ books, deleteBook, onUpdateStatus, onUpdateRating }) {
   return (
