@@ -92,9 +92,8 @@ export const BooksProvider = ({ children }) => {
     }
   };
 
-  const updateBookRating = async (id, rating) => {
-    console.log("Updating rating for book ID:", id); // vérifier l'ID
-    try {
+  const updateBookRating = (id, rating) => {
+      const ratingNumber = parseInt(rating);
       const token = JSON.parse(localStorage.getItem("user")).token;
       const config = {
         headers: {
@@ -103,20 +102,19 @@ export const BooksProvider = ({ children }) => {
         },
       };
 
-      const response = await axios.put(
+      axios.put(
         `${API_URL}/api/books/${id}/rating`,
-        { rating },
+        { rating: ratingNumber },
         config
-      );
-
-      setBooks((prevBooks) =>
-        prevBooks.map((book) =>
-          book._id === id ? { ...book, rating: response.data.rating } : book
-        )
-      );
-    } catch (error) {
-      console.error("Erreur lors de la mise à jour de la note :", error);
-    }
+      ).then((response) => {
+        setBooks((prevBooks) =>
+          prevBooks.map((book) =>
+            book._id === id ? { ...book, rating: response.data.rating } : book
+          )
+        );
+      }).catch((error) => {
+        console.error("Erreur lors de la mise à jour de la note :", error);
+      })
   };
 
   useEffect(() => {

@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import PropTypes from "prop-types";
-import ReactStars from 'react-rating-stars-component';
+import ReactStars from "react-rating-stars-component";
 
 function BookList({ books, deleteBook, onUpdateStatus, onUpdateRating }) {
   return (
@@ -43,12 +43,12 @@ function BookList({ books, deleteBook, onUpdateStatus, onUpdateRating }) {
                 <div className="mt-4">
                   <label className="block text-gray-700 dark:text-white">Note :</label>
                   <ReactStars
-                  count={5}
-                  value={book.rating || 0}
-                  onChange={(newRating) => onUpdateRating(book._id || book.id, newRating)}
-                  size={24}
-                  activeColor="#ffd700"
-                />
+                    count={5}
+                    value={book.rating || 0}
+                    onChange={(newRating) => onUpdateRating(book._id || book.id, newRating)}
+                    size={24}
+                    activeColor="#ffd700"
+                  />
                 </div>
               </motion.div>
             ))}

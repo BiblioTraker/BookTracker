@@ -56,13 +56,13 @@ const Books = () => {
     await updateBookStatus(id, newStatus);
   };
 
-  const handleUpdateRating = async (id, rating) => {
-    try {
-      await updateBookRating(id, rating);
-    } catch (error) {
-      console.error("Erreur lors de la mise à jour de la note :", error);
-    }
-  };
+  // const handleUpdateRating = async (id, rating) => {
+  //   try {
+  //     await updateBookRating(id, rating);
+  //   } catch (error) {
+  //     console.error("Erreur lors de la mise à jour de la note :", error);
+  //   }
+  // };
 
   return (
     <div>
@@ -100,7 +100,7 @@ const Books = () => {
           books={sortedBooks}
           deleteBook={handleDeleteBook}
           onUpdateStatus={handleUpdateStatus}
-          onUpdateRating={handleUpdateRating}
+          onUpdateRating={updateBookRating}
         />
       </div>
     </div>
