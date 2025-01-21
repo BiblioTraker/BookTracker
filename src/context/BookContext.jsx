@@ -9,7 +9,6 @@ export const BooksProvider = ({ children }) => {
   const [books, setBooks] = useState([]);
   const API_URL = import.meta.env.VITE_API_URL;
 
-  // Charger les livres depuis le backend
   const fetchBooks = async () => {
     try {
       const token = localStorage.getItem("user")
@@ -17,7 +16,7 @@ export const BooksProvider = ({ children }) => {
         : null;
 
       if (!token) {
-        setBooks([]); // Réinitialise les livres si aucun token n'est présent
+        setBooks([]);
         return;
       }
 
@@ -29,14 +28,12 @@ export const BooksProvider = ({ children }) => {
 
       const response = await axios.get(`${API_URL}/api/books`, config);
       setBooks(response.data);
-      console.log("Livres récupérés depuis le backend :", response.data);
     } catch (error) {
       console.error("Erreur lors de la récupération des livres :", error);
-      setBooks([]); // Réinitialise les livres en cas d'erreur
+      setBooks([]);
     }
   };
 
-  // Ajouter un livre au backend
   const addBook = async (newBook) => {
     try {
       const token = JSON.parse(localStorage.getItem("user")).token;
@@ -53,7 +50,6 @@ export const BooksProvider = ({ children }) => {
     }
   };
 
-  // Supprimer un livre du backend
   const deleteBook = async (id) => {
     try {
       const token = JSON.parse(localStorage.getItem("user")).token;
@@ -63,17 +59,13 @@ export const BooksProvider = ({ children }) => {
         },
       };
 
-      console.log("URL de suppression :", `${API_URL}/api/books/${id}`);
       await axios.delete(`${API_URL}/api/books/${id}`, config);
-
       setBooks((prevBooks) => prevBooks.filter((book) => book._id !== id));
-      console.log("Livre supprimé avec succès !");
     } catch (error) {
       console.error("Erreur lors de la suppression du livre :", error);
     }
   };
 
-  // Mettre à jour le statut d'un livre
   const updateBookStatus = async (id, newStatus) => {
     try {
       const token = JSON.parse(localStorage.getItem("user")).token;
@@ -84,7 +76,6 @@ export const BooksProvider = ({ children }) => {
         },
       };
 
-      console.log("URL de mise à jour :", `${API_URL}/api/books/${id}`);
       const response = await axios.put(
         `${API_URL}/api/books/${id}`,
         { status: newStatus },
@@ -101,14 +92,35 @@ export const BooksProvider = ({ children }) => {
     }
   };
 
-  // Réinitialiser les livres (lors de la déconnexion)
-  const resetBooks = () => {
-    setBooks([]);
-    console.log("Livres réinitialisés.");
+  const updateBookRating = async (id, rating) => {
+    console.log("Updating rating for book ID:", id); // vérifier l'ID
+    try {
+      const token = JSON.parse(localStorage.getItem("user")).token;
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      };
+
+      const response = await axios.put(
+        `${API_URL}/api/books/${id}/rating`,
+        { rating },
+        config
+      );
+
+      setBooks((prevBooks) =>
+        prevBooks.map((book) =>
+          book._id === id ? { ...book, rating: response.data.rating } : book
+        )
+      );
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour de la note :", error);
+    }
   };
 
   useEffect(() => {
-    fetchBooks(); // Charger les livres lors du montage
+    fetchBooks();
   }, []);
 
   return (
@@ -120,7 +132,7 @@ export const BooksProvider = ({ children }) => {
         addBook,
         deleteBook,
         updateBookStatus,
-        resetBooks, // Ajout de la fonction pour réinitialiser les livres
+        updateBookRating,
       }}
     >
       {children}

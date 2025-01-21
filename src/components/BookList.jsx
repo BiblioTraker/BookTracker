@@ -1,7 +1,8 @@
 import { motion, AnimatePresence } from "framer-motion";
 import PropTypes from "prop-types";
+import ReactStars from "react-rating-stars-component";
 
-function BookList({ books, deleteBook, onUpdateStatus }) {
+function BookList({ books, deleteBook, onUpdateStatus, onUpdateRating }) {
   return (
     <div className="p-4">
       <h2 className="text-2xl font-bold mb-4">Ma Liste de Livres</h2>
@@ -26,25 +27,28 @@ function BookList({ books, deleteBook, onUpdateStatus }) {
                 <p className="text-gray-500 dark:text-white">Auteur : {book.author}</p>
                 <p className="text-gray-500 dark:text-white">Statut : {book.status}</p>
                 <div className="flex space-x-2 mt-4">
-                <button
-                  onClick={() => {
-                    console.log("ID pour mise à jour du statut :", book._id || book.id);
-                    onUpdateStatus(book._id || book.id);
-                  }}
-                  className="bg-yellow-500 text-white px-4 py-2 rounded"
-                >
-                  Changer Statut
-                </button>
-
-                <button
-                  onClick={() => {
-                    console.log("ID pour suppression :", book._id || book.id);
-                    deleteBook(book._id || book.id);
-                  }}
-                  className="bg-red-500 text-white px-4 py-2 rounded"
-                >
-                  Supprimer
-                </button>
+                  <button
+                    onClick={() => onUpdateStatus(book._id || book.id)}
+                    className="bg-yellow-500 text-white px-4 py-2 rounded"
+                  >
+                    Changer Statut
+                  </button>
+                  <button
+                    onClick={() => deleteBook(book._id || book.id)}
+                    className="bg-red-500 text-white px-4 py-2 rounded"
+                  >
+                    Supprimer
+                  </button>
+                </div>
+                <div className="mt-4">
+                  <label className="block text-gray-700 dark:text-white">Note :</label>
+                  <ReactStars
+                  count={5}
+                  value={book.rating || 0}
+                  onChange={(newRating) => onUpdateRating(book._id || book.id, newRating)}
+                  size={24}
+                  activeColor="#ffd700"
+                />
                 </div>
               </motion.div>
             ))}
@@ -66,10 +70,12 @@ BookList.propTypes = {
       title: PropTypes.string,
       author: PropTypes.string,
       status: PropTypes.string,
+      rating: PropTypes.number,
     })
   ).isRequired,
   deleteBook: PropTypes.func.isRequired,
   onUpdateStatus: PropTypes.func.isRequired,
+  onUpdateRating: PropTypes.func.isRequired,
 };
 
 export default BookList;

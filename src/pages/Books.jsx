@@ -3,10 +3,10 @@ import { useState } from "react";
 import BookList from "../components/BookList";
 
 const Books = () => {
-  const { books, deleteBook, updateBookStatus } = useBooks();
+  const { books, deleteBook, updateBookStatus, updateBookRating } = useBooks();
   const [filterStatus, setFilterStatus] = useState("Tous");
   const [sortOption, setSortOption] = useState("titre");
-  const [searchTerm, setSearchTerm] = useState(""); // Ajout de l'état pour la recherche
+  const [searchTerm, setSearchTerm] = useState("");
 
   const handleFilterChange = (e) => {
     setFilterStatus(e.target.value);
@@ -17,10 +17,9 @@ const Books = () => {
   };
 
   const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value); // Met à jour le terme de recherche
+    setSearchTerm(e.target.value);
   };
 
-  // Filtrer les livres par statut et terme de recherche
   const filteredBooks = books.filter((book) => {
     const matchesSearch = book.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
                           book.author.toLowerCase().includes(searchTerm.toLowerCase());
@@ -36,7 +35,6 @@ const Books = () => {
 
   const handleDeleteBook = async (id) => {
     try {
-      console.log("Suppression du livre avec ID :", id); // Log pour déboguer
       await deleteBook(id);
     } catch (error) {
       console.error("Erreur lors de la suppression du livre :", error);
@@ -55,14 +53,20 @@ const Books = () => {
     else if (book.status === "En cours") newStatus = "Lu";
     else newStatus = "À lire";
 
-    console.log("Mise à jour du statut pour l'ID :", id, "Nouveau statut :", newStatus);
     await updateBookStatus(id, newStatus);
+  };
+
+  const handleUpdateRating = async (id, rating) => {
+    try {
+      await updateBookRating(id, rating);
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour de la note :", error);
+    }
   };
 
   return (
     <div>
       <div className="p-4">
-        {/* Barre de recherche */}
         <div className="mb-4">
           <input
             type="text"
@@ -72,8 +76,6 @@ const Books = () => {
             className="border border-gray-300 rounded p-2 w-full dark:text-black"
           />
         </div>
-
-        {/* Filtres et tri */}
         <div className="flex justify-between items-center mb-4 dark:text-black">
           <select
             value={filterStatus}
@@ -94,12 +96,11 @@ const Books = () => {
             <option value="auteur">Auteur</option>
           </select>
         </div>
-
-        {/* Liste des livres */}
         <BookList
           books={sortedBooks}
           deleteBook={handleDeleteBook}
           onUpdateStatus={handleUpdateStatus}
+          onUpdateRating={handleUpdateRating}
         />
       </div>
     </div>
