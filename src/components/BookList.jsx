@@ -83,7 +83,7 @@ function BookList({ books, deleteBook, onUpdateStatus, onUpdateRating, onAddComm
                   <ul className="list-disc list-inside">
                     {book.comments.map((comment) => (
                       <li key={comment._id} className="text-gray-500 dark:text-white flex justify-between items-center">
-                        <span>{comment.text} - <em>{typeof comment.user === 'object' ? comment.user.name : comment.user}</em></span>
+                        <span>{comment.text} - <em>{comment.name}</em></span>
                         <button
                           onClick={() => onDeleteComment(book._id || book.id, comment._id)}
                           className="bg-red-500 text-white px-2 py-1 rounded ml-2"
