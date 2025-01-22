@@ -27,6 +27,7 @@ export const BooksProvider = ({ children }) => {
       };
 
       const response = await axios.get(`${API_URL}/api/books`, config);
+      console.log('response', response.data);
       setBooks(response.data);
     } catch (error) {
       console.error("Erreur lors de la récupération des livres :", error);
