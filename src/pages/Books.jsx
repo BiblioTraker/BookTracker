@@ -3,7 +3,7 @@ import { useState } from "react";
 import BookList from "../components/BookList";
 
 const Books = () => {
-  const { books, deleteBook, updateBookStatus, updateBookRating } = useBooks();
+  const { books, deleteBook, updateBookStatus, updateBookRating, addComment, deleteComment } = useBooks();
   const [filterStatus, setFilterStatus] = useState("Tous");
   const [sortOption, setSortOption] = useState("titre");
   const [searchTerm, setSearchTerm] = useState("");
@@ -56,14 +56,6 @@ const Books = () => {
     await updateBookStatus(id, newStatus);
   };
 
-  // const handleUpdateRating = async (id, rating) => {
-  //   try {
-  //     await updateBookRating(id, rating);
-  //   } catch (error) {
-  //     console.error("Erreur lors de la mise à jour de la note :", error);
-  //   }
-  // };
-
   return (
     <div>
       <div className="p-4">
@@ -101,6 +93,8 @@ const Books = () => {
           deleteBook={handleDeleteBook}
           onUpdateStatus={handleUpdateStatus}
           onUpdateRating={updateBookRating}
+          onAddComment={addComment}
+          onDeleteComment={deleteComment}
         />
       </div>
     </div>

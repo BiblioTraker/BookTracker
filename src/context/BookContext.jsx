@@ -117,6 +117,46 @@ export const BooksProvider = ({ children }) => {
       })
   };
 
+  const addComment = async (bookId, text) => {
+    try {
+      const token = JSON.parse(localStorage.getItem("user")).token;
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const response = await axios.post(`${API_URL}/api/books/${bookId}/comments`, { text }, config);
+      setBooks((prevBooks) =>
+        prevBooks.map((book) =>
+          book._id === bookId ? { ...book, comments: response.data.comments } : book
+        )
+      );
+    } catch (error) {
+      console.error("Erreur lors de l'ajout du commentaire :", error);
+    }
+  };
+
+  const deleteComment = async (bookId, commentId) => {
+    try {
+      const token = JSON.parse(localStorage.getItem("user")).token;
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+  
+      const response = await axios.delete(`${API_URL}/api/books/${bookId}/comments/${commentId}`, config);
+      setBooks((prevBooks) =>
+        prevBooks.map((book) =>
+          book._id === bookId ? { ...book, comments: response.data.comments } : book
+        )
+      );
+    } catch (error) {
+      console.error("Erreur lors de la suppression du commentaire :", error);
+    }
+  };
+
   useEffect(() => {
     fetchBooks();
   }, []);
@@ -131,6 +171,8 @@ export const BooksProvider = ({ children }) => {
         deleteBook,
         updateBookStatus,
         updateBookRating,
+        addComment,
+        deleteComment,
       }}
     >
       {children}
