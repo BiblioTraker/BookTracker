@@ -3,7 +3,7 @@ import { useState } from "react";
 import BookList from "../components/BookList";
 
 const Books = () => {
-  const { books, deleteBook, updateBookStatus, updateBookRating, addComment, deleteComment } = useBooks();
+  const { books, deleteBook, updateBookStatus, updateBookRating, addComment, deleteComment, updateComment } = useBooks();
   const [filterStatus, setFilterStatus] = useState("Tous");
   const [sortOption, setSortOption] = useState("titre");
   const [searchTerm, setSearchTerm] = useState("");
@@ -95,6 +95,7 @@ const Books = () => {
           onUpdateRating={updateBookRating}
           onAddComment={addComment}
           onDeleteComment={deleteComment}
+          onUpdateComment={updateComment}
         />
       </div>
     </div>

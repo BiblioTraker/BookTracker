@@ -158,6 +158,32 @@ export const BooksProvider = ({ children }) => {
     }
   };
 
+  const updateComment = async (bookId, commentId, text) => {
+    try {
+      const token = JSON.parse(localStorage.getItem("user")).token;
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      };
+  
+      const response = await axios.put(
+        `${API_URL}/api/books/${bookId}/comments/${commentId}`,
+        { text },
+        config
+      );
+  
+      setBooks((prevBooks) =>
+        prevBooks.map((book) =>
+          book._id === bookId ? { ...book, comments: response.data.comments } : book
+        )
+      );
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour du commentaire :", error);
+    }
+  };
+
   useEffect(() => {
     fetchBooks();
   }, []);
@@ -174,6 +200,7 @@ export const BooksProvider = ({ children }) => {
         updateBookRating,
         addComment,
         deleteComment,
+        updateComment,
       }}
     >
       {children}

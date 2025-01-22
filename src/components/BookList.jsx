@@ -1,11 +1,10 @@
 import { motion, AnimatePresence } from "framer-motion";
 import PropTypes from "prop-types";
 import ReactStars from "react-rating-stars-component";
-import { FaBook, FaBookOpen, FaCheck } from "react-icons/fa";
+import { FaBook, FaBookOpen, FaCheck, FaTrash, FaEdit, FaSave } from "react-icons/fa";
 import { useState } from "react";
-import { FaTrash } from "react-icons/fa";
 
-function BookList({ books, deleteBook, onUpdateStatus, onUpdateRating, onAddComment, onDeleteComment }) {
+function BookList({ books, deleteBook, onUpdateStatus, onUpdateRating, onAddComment, onDeleteComment, onUpdateComment }) {
 
   const getStatusIcon = (status) => {
     switch (status) {
@@ -20,16 +19,34 @@ function BookList({ books, deleteBook, onUpdateStatus, onUpdateRating, onAddComm
     }
   };
 
-  const [commentTexts, setCommentTexts] = useState({});
+  const [newCommentTexts, setNewCommentTexts] = useState({});
+  const [editCommentTexts, setEditCommentTexts] = useState({});
+  const [editingCommentId, setEditingCommentId] = useState(null);
 
   const handleAddComment = (bookId) => {
-    if (commentTexts[bookId]?.trim() === "") return;
-    onAddComment(bookId, commentTexts[bookId]);
-    setCommentTexts((prev) => ({ ...prev, [bookId]: "" }));
+    if (newCommentTexts[bookId]?.trim() === "") return;
+    onAddComment(bookId, newCommentTexts[bookId]);
+    setNewCommentTexts((prev) => ({ ...prev, [bookId]: "" }));
   };
 
-  const handleCommentChange = (bookId, text) => {
-    setCommentTexts((prev) => ({ ...prev, [bookId]: text }));
+  const handleNewCommentChange = (bookId, text) => {
+    setNewCommentTexts((prev) => ({ ...prev, [bookId]: text }));
+  };
+
+  const handleEditComment = (bookId, commentId, text) => {
+    setEditingCommentId(commentId);
+    setEditCommentTexts((prev) => ({ ...prev, [commentId]: text }));
+  };
+
+  const handleEditCommentChange = (commentId, text) => {
+    setEditCommentTexts((prev) => ({ ...prev, [commentId]: text }));
+  };
+
+  const handleUpdateComment = (bookId, commentId) => {
+    if (editCommentTexts[commentId]?.trim() === "") return;
+    onUpdateComment(bookId, commentId, editCommentTexts[commentId]);
+    setEditingCommentId(null);
+    setEditCommentTexts((prev) => ({ ...prev, [commentId]: "" }));
   };
 
   return (
@@ -61,12 +78,12 @@ function BookList({ books, deleteBook, onUpdateStatus, onUpdateRating, onAddComm
                 <h3 className="text-lg font-semibold dark:text-white">{book.title}</h3>
                 <p className="text-gray-500 dark:text-white">Auteur : {book.author}</p>
                 <div className="flex space-x-2 mt-4">
-                  <button
-                    onClick={() => deleteBook(book._id || book.id)}
-                    className="bg-red-500 text-white px-4 py-2 rounded"
-                  >
-                    <FaTrash />
-                  </button>
+                <button
+                  onClick={() => deleteBook(book._id || book.id)}
+                  className="bg-red-500 text-white px-4 py-2 rounded"
+                >
+                  <FaTrash />
+                </button>
                 </div>
                 <div className="mt-4">
                   <label className="block text-gray-700 dark:text-white">Note :</label>
@@ -80,33 +97,60 @@ function BookList({ books, deleteBook, onUpdateStatus, onUpdateRating, onAddComm
                 </div>
                 <div className="mt-4 w-full">
                 <h4 className="text-md font-semibold dark:text-white">Commentaires :</h4>
-                  <ul className="list-disc list-inside">
-                    {book.comments.map((comment) => (
-                      <li key={comment._id} className="text-gray-500 dark:text-white flex justify-between items-center">
-                        <span>{comment.text} - <em>{comment.name}</em></span>
-                        <button
-                          onClick={() => onDeleteComment(book._id || book.id, comment._id)}
-                          className="bg-red-500 text-white px-2 py-1 rounded ml-2"
-                        >
-                          <FaTrash />
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                  <input
-                    type="text"
-                    value={commentTexts[book._id || book.id] || ""}
-                    onChange={(e) => handleCommentChange(book._id || book.id, e.target.value)}
-                    placeholder="Ajouter un commentaire"
-                    className="border border-gray-300 rounded p-2 w-full dark:text-black mt-2"
-                  />
-                  <button
-                    onClick={() => handleAddComment(book._id || book.id)}
-                    className="bg-blue-500 text-white px-4 py-2 rounded mt-2"
-                  >
-                    Ajouter
-                  </button>
-                </div>
+                <ul className="list-disc list-inside">
+                  {book.comments.map((comment) => (
+                    <li key={comment._id} className="text-gray-500 dark:text-white flex justify-between items-center">
+                      {editingCommentId === comment._id ? (
+                        <>
+                          <input
+                            type="text"
+                            value={editCommentTexts[comment._id] || ""}
+                            onChange={(e) => handleEditCommentChange(comment._id, e.target.value)}
+                            className="border border-gray-300 rounded p-2 w-full dark:text-black"
+                          />
+                          <button
+                            onClick={() => handleUpdateComment(book._id || book.id, comment._id)}
+                            className="bg-blue-500 text-white px-2 py-1 rounded ml-2"
+                          >
+                            <FaSave />
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <span>{comment.text} - <em>{comment.name}</em></span>
+                          <div className="flex items-center">
+                            <button
+                              onClick={() => handleEditComment(book._id || book.id, comment._id, comment.text)}
+                              className="bg-yellow-500 text-white px-2 py-1 rounded ml-2"
+                            >
+                              <FaEdit />
+                            </button>
+                            <button
+                              onClick={() => onDeleteComment(book._id || book.id, comment._id)}
+                              className="bg-red-500 text-white px-2 py-1 rounded ml-2"
+                            >
+                              <FaTrash />
+                            </button>
+                          </div>
+                        </>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+                <input
+                  type="text"
+                  value={newCommentTexts[book._id || book.id] || ""}
+                  onChange={(e) => handleNewCommentChange(book._id || book.id, e.target.value)}
+                  placeholder="Ajouter un commentaire"
+                  className="border border-gray-300 rounded p-2 w-full dark:text-black mt-2"
+                />
+                <button
+                  onClick={() => handleAddComment(book._id || book.id)}
+                  className="bg-blue-500 text-white px-4 py-2 rounded mt-2"
+                >
+                  Ajouter
+                </button>
+              </div>
               </motion.div>
             ))}
           </AnimatePresence>
@@ -147,6 +191,7 @@ BookList.propTypes = {
   onUpdateRating: PropTypes.func.isRequired,
   onAddComment: PropTypes.func.isRequired,
   onDeleteComment: PropTypes.func.isRequired,
+  onUpdateComment: PropTypes.func.isRequired,
 };
 
 export default BookList;
