@@ -10,7 +10,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [emailAutoComplete, setEmailAutoComplete] = useState("off");
   const [passwordAutoComplete, setPasswordAutoComplete] = useState("off");
-  const { login } = useContext(AuthContext);
+  const { login, allowPasswordPageAccess } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -25,10 +25,10 @@ const Login = () => {
     const data = await response.json();
 
     if (response.ok) {
-      login(data); // Stocke les données utilisateur dans le contexte
-      navigate("/"); // Redirige vers la page d'accueil
+      login(data);
+      navigate("/");
     } else {
-      alert(data.message); // Affiche un message d'erreur
+      alert(data.message);
     }
   };
 
@@ -43,10 +43,10 @@ const Login = () => {
       const data = await res.json();
 
       if (res.ok) {
-        login(data); // Stocke les données utilisateur dans le contexte
-        navigate("/"); // Redirige vers la page d'accueil
+        login(data);
+        navigate("/");
       } else {
-        alert(data.message); // Affiche un message d'erreur
+        alert(data.message);
       }
     } catch (error) {
       console.error("Erreur réseau :", error);
@@ -57,6 +57,11 @@ const Login = () => {
   const handleGoogleFailure = (error) => {
     console.error("Erreur de connexion Google :", error);
     alert("Erreur lors de la connexion avec Google. Veuillez réessayer.");
+  };
+
+  const handleForgotPasswordClick = () => {
+    allowPasswordPageAccess();
+    navigate("/forgot-password");
   };
 
   return (
@@ -127,12 +132,12 @@ const Login = () => {
             />
           </div>
           <p className="mt-4 text-sm text-center text-gray-600 dark:text-gray-400">
-            <a
-              href="/forgot-password"
+            <button
+              onClick={handleForgotPasswordClick}
               className="text-indigo-500 hover:underline dark:text-indigo-400"
             >
               Mot de passe oublié ?
-            </a>
+            </button>
           </p>
           <p className="mt-4 text-sm text-center text-gray-600 dark:text-gray-400">
             Vous n'avez pas de compte ?{" "}

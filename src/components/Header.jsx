@@ -10,10 +10,10 @@ function Header({ toggleTheme, isDarkMode }) {
   const { resetBooks } = useBooks(); // Utiliser resetBooks pour vider les livres
 
   const handleLogout = () => {
+    navigate("/login"); // Redirige vers la page de connexion
     logout(); // Déconnecte l'utilisateur
     localStorage.clear(); // Supprime toutes les données du localStorage
     resetBooks(); // Réinitialise les livres
-    navigate("/login"); // Redirige vers la page de connexion
   };
 
   return (
