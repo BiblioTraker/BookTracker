@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion"; // Import Framer Motion
 import { useBooks } from "../context/BookContext";
+import { AiOutlineClose } from 'react-icons/ai';
 
 const AddBook = () => {
   const { books, setBooks, addBook } = useBooks(); // Accéder au contexte global pour les livres
@@ -98,11 +99,17 @@ const AddBook = () => {
     }
   };
 
+  const clearSearch = () => {
+    setSearchTerm('');
+    setSearchResults([]);
+  };
+
   return (
+    <div className="p-4 mt-8 bg-gray-100 dark:bg-gray-900 dark:text-white">
     <div className="p-4 mt-8 bg-white dark:bg-gray-700 dark:text-gray-200 rounded shadow-md mx-4 sm:mx-8 md:mx-16 lg:mx-32">
       <h2 className="text-2xl font-bold mb-4">Ajouter un Livre</h2>
       {/* Recherche de livres */}
-      <div className="mb-4">
+      <div className="mb-4 flex items-center">
         <input
           type="text"
           id="searchTerm"
@@ -110,8 +117,15 @@ const AddBook = () => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="Rechercher un livre"
-          className="border border-gray-300 rounded p-2 w-full dark:text-black"
+          className="border border-gray-300 rounded p-2 w-1/2 dark:text-black"
         />
+        {searchTerm && (
+          <AiOutlineClose
+          onClick={clearSearch}
+          className="ml-2 text-red-500 cursor-pointer"
+          size={24}
+        />
+        )}
       </div>
       {isLoading && <p className="text-gray-500">Recherche en cours...</p>}
       {successMessage && (
@@ -203,6 +217,7 @@ const AddBook = () => {
           </button>
         </form>
       </div>
+    </div>
     </div>
   );
 };
