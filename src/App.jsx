@@ -13,6 +13,7 @@ import PrivateRoute from "./components/PrivateRoute"; // Importer PrivateRoute
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from "./pages/ResetPassword";
 import PublicRoute from "./components/PublicRoute"; // Importer PublicRoute
+import StatisticsPage from "./pages/StatisticsPage";
 
 
 const App = () => {
@@ -112,6 +113,16 @@ const App = () => {
                 </PrivateRoute>
               }
             />
+            <Route
+                path="/statistics"
+                element={
+                  <PrivateRoute>
+                    <PageTransition>
+                      <StatisticsPage />
+                    </PageTransition>
+                  </PrivateRoute>
+                }
+              />
           </Routes>
         </AnimatePresence>
       </div>

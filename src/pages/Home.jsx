@@ -1,5 +1,4 @@
 import { useBooks } from "../context/BookContext";
-import Statistics from "../components/Statistics";
 
 const Home = () => {
   const { books } = useBooks();
@@ -12,11 +11,6 @@ const Home = () => {
           Suivez vos lectures, visualisez vos progrès, et explorez vos livres préférés.
         </p>
       </header>
-      <main>
-        <section className="mb-8">
-          <Statistics books={books} />
-        </section>
-      </main>
     </div>
   );
 };
