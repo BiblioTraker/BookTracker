@@ -1,12 +1,15 @@
+// src/pages/Books.jsx
 import { useBooks } from "../context/BookContext";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import BookList from "../components/BookList";
+import Statistics from '../components/Statistics';
 
 const Books = () => {
   const { books, deleteBook, updateBookStatus, updateBookRating, addComment, deleteComment, updateComment } = useBooks();
   const [filterStatus, setFilterStatus] = useState("Tous");
   const [sortOption, setSortOption] = useState("titre");
   const [searchTerm, setSearchTerm] = useState("");
+  const bookListRef = useRef(null); // Référence pour la liste de livres
 
   const handleFilterChange = (e) => {
     setFilterStatus(e.target.value);
@@ -18,6 +21,11 @@ const Books = () => {
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
+  };
+
+  const handleStatisticFilter = (status) => {
+    setFilterStatus(status);
+    bookListRef.current.scrollIntoView({ behavior: "smooth" }); // Faire défiler vers la liste de livres
   };
 
   const filteredBooks = books.filter((book) => {
@@ -58,21 +66,24 @@ const Books = () => {
 
   return (
     <div>
-      <div className="p-4">
-        <div className="mb-4">
+      <div className="mt-8">
+        <Statistics books={books} onFilter={handleStatisticFilter} />
+      </div>
+      <div className="p-4" ref={bookListRef} id="book-list">
+        <div className="mb-4 flex justify-center">
           <input
             type="text"
-            placeholder="Rechercher par titre ou auteur..."
+            placeholder="Rechercher un de vos livres"
             value={searchTerm}
             onChange={handleSearchChange}
-            className="border border-gray-300 rounded p-2 w-full dark:text-black"
+            className="border border-gray-300 rounded p-2 w-1/3 dark:text-black"
           />
         </div>
-        <div className="flex justify-between items-center mb-4 dark:text-black">
+        <div className="flex justify-start items-center mb-4 dark:text-black">
           <select
             value={filterStatus}
             onChange={handleFilterChange}
-            className="border border-gray-300 rounded p-2"
+            className="border border-gray-300 rounded p-2 mr-8"
           >
             <option value="Tous">Tous</option>
             <option value="Lu">Lu</option>

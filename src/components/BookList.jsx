@@ -80,7 +80,7 @@ function BookList({ books, deleteBook, onUpdateStatus, onUpdateRating, onAddComm
                 <div className="flex space-x-2 mt-4">
                 <button
                   onClick={() => deleteBook(book._id || book.id)}
-                  className="bg-red-500 text-white px-4 py-2 rounded"
+                  className="absolute top-2 right-2 p-2 rounded-full bg-red-500 text-white"
                 >
                   <FaTrash />
                 </button>

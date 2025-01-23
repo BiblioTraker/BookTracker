@@ -17,7 +17,7 @@ function Header({ toggleTheme, isDarkMode }) {
   };
 
   return (
-    <header className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg dark:from-purple-800 dark:to-indigo-800">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg dark:from-purple-800 dark:to-indigo-800">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo et lien vers la page d'accueil */}
@@ -27,7 +27,6 @@ function Header({ toggleTheme, isDarkMode }) {
               BiblioTracker
             </Link>
           </div>
-
           {/* Navigation */}
           <nav className="p-4">
             <ul className="flex justify-between items-center">
@@ -43,8 +42,12 @@ function Header({ toggleTheme, isDarkMode }) {
                     Ajouter un Livre
                   </Link>
                 </li>
+                <li>
+                  <Link to="/statistics" className="hover:underline">
+                    Statistiques
+                  </Link>
+                </li>
               </div>
-
               {/* Section connexion/déconnexion */}
               <div className="ml-4">
                 {user ? (
@@ -66,7 +69,6 @@ function Header({ toggleTheme, isDarkMode }) {
                   </Link>
                 )}
               </div>
-
               {/* Bouton pour basculer le thème */}
               <button
                 onClick={toggleTheme}
