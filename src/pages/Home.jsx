@@ -1,4 +1,5 @@
 import { useBooks } from "../context/BookContext";
+import { Link } from "react-router-dom";
 
 const Home = () => {
   const { books } = useBooks();
@@ -11,6 +12,16 @@ const Home = () => {
           Suivez vos lectures, visualisez vos progrès, et explorez vos livres préférés.
         </p>
       </header>
+      {books.length === 0 && (
+        <div className="text-center mt-8">
+          <p className="text-xl text-gray-700 dark:text-gray-300">Ajoutez votre premier livre</p>
+          <Link to="/add-book">
+            <button className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+              Ajouter un Livre
+            </button>
+          </Link>
+        </div>
+      )}
     </div>
   );
 };
