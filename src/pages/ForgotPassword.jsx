@@ -1,23 +1,34 @@
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
+import AuthContext from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState(null);
+  const { canAccessPasswordPages, disallowPasswordPageAccess } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!canAccessPasswordPages) {
+      navigate("/login");
+    }
+  }, [canAccessPasswordPages, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/forgot-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }), // Envoyer directement l'email
+        body: JSON.stringify({ email }),
       });
-  
+
       const data = await response.json();
-  
+
       if (response.ok) {
         setMessage("Un email de réinitialisation a été envoyé.");
+        disallowPasswordPageAccess(); // Désactiver l'accès après l'envoi de l'email
       } else {
         setMessage(data.message || "Une erreur est survenue.");
       }
