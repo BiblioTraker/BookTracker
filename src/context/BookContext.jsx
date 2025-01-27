@@ -198,8 +198,6 @@ export const BooksProvider = ({ children }) => {
       // Faites la requête pour inverser le statut
       const response = await axios.put(`${API_URL}/api/books/${id}/for-sale`, {}, config);
   
-      console.log("Réponse du backend :", response.data);
-  
       // Mettez à jour l'état local des livres
       setBooks((prevBooks) =>
         prevBooks.map((book) =>
@@ -211,8 +209,6 @@ export const BooksProvider = ({ children }) => {
     }
   };
   
-  
-
   useEffect(() => {
     fetchBooks();
   }, []);
