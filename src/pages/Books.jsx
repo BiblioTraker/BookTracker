@@ -5,7 +5,7 @@ import BookList from "../components/BookList";
 import Statistics from '../components/Statistics';
 
 const Books = () => {
-  const { books, deleteBook, updateBookStatus, updateBookRating, addComment, deleteComment, updateComment } = useBooks();
+  const { books, deleteBook, updateBookStatus, updateBookRating, addComment, deleteComment, updateComment, toggleForSale } = useBooks();
   const [filterStatus, setFilterStatus] = useState("Tous");
   const [sortOption, setSortOption] = useState("titre");
   const [searchTerm, setSearchTerm] = useState("");
@@ -59,9 +59,18 @@ const Books = () => {
     let newStatus;
     if (book.status === "À lire") newStatus = "En cours";
     else if (book.status === "En cours") newStatus = "Lu";
+    else if (book.status === "Lu") newStatus = "À acheter";
     else newStatus = "À lire";
 
     await updateBookStatus(id, newStatus);
+  };
+
+  const handleToggleForSale = async (id) => {
+    try {
+      await toggleForSale(id);
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour du statut 'À vendre' :", error);
+    }
   };
 
   return (
@@ -89,6 +98,8 @@ const Books = () => {
             <option value="Lu">Lu</option>
             <option value="En cours">En cours</option>
             <option value="À lire">À lire</option>
+            <option value="À acheter">À acheter</option>
+            <option value="À vendre">À vendre</option>
           </select>
           <select
             value={sortOption}
@@ -107,6 +118,7 @@ const Books = () => {
           onAddComment={addComment}
           onDeleteComment={deleteComment}
           onUpdateComment={updateComment}
+          onToggleForSale={handleToggleForSale}
         />
       </div>
     </div>
