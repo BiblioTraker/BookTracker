@@ -12,11 +12,12 @@ function Statistics({ books, onFilter }) {
       { name: "Lu", value: counts.Lu },
       { name: "En cours", value: counts["En cours"] },
       { name: "À lire", value: counts["À lire"] },
+      { name: "À acheter", value: counts["À acheter"] },
     ];
   };
 
   const data = getStatusCounts();
-  const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
+  const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
   const handleClick = (data) => {
     onFilter(data.name);

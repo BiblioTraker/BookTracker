@@ -184,6 +184,35 @@ export const BooksProvider = ({ children }) => {
     }
   };
 
+  const toggleForSale = async (id) => {
+    try {
+      console.log("ID transmis :", id);
+  
+      const token = JSON.parse(localStorage.getItem("user")).token;
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+  
+      // Faites la requête pour inverser le statut
+      const response = await axios.put(`${API_URL}/api/books/${id}/for-sale`, {}, config);
+  
+      console.log("Réponse du backend :", response.data);
+  
+      // Mettez à jour l'état local des livres
+      setBooks((prevBooks) =>
+        prevBooks.map((book) =>
+          book._id === id ? { ...book, isForSale: response.data.isForSale } : book
+        )
+      );
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour du statut 'À vendre' :", error);
+    }
+  };
+  
+  
+
   useEffect(() => {
     fetchBooks();
   }, []);
@@ -201,6 +230,7 @@ export const BooksProvider = ({ children }) => {
         addComment,
         deleteComment,
         updateComment,
+        toggleForSale,
       }}
     >
       {children}

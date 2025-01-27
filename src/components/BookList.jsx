@@ -1,10 +1,10 @@
 import { motion, AnimatePresence } from "framer-motion";
 import PropTypes from "prop-types";
 import ReactStars from "react-rating-stars-component";
-import { FaBook, FaBookOpen, FaCheck, FaTrash, FaEdit, FaSave } from "react-icons/fa";
+import { FaBook, FaBookOpen, FaCheck, FaTrash, FaEdit, FaSave, FaShoppingCart, FaDollarSign } from "react-icons/fa";
 import { useState } from "react";
 
-function BookList({ books, deleteBook, onUpdateStatus, onUpdateRating, onAddComment, onDeleteComment, onUpdateComment }) {
+function BookList({ books, deleteBook, onUpdateStatus, onUpdateRating, onAddComment, onDeleteComment, onUpdateComment, onToggleForSale }) {
 
   const getStatusIcon = (status) => {
     switch (status) {
@@ -14,6 +14,8 @@ function BookList({ books, deleteBook, onUpdateStatus, onUpdateRating, onAddComm
         return <FaBookOpen className="text-blue-500" />;
       case "Lu":
         return <FaCheck className="text-green-500" />;
+      case "À acheter":
+        return <FaShoppingCart className="text-red-500" />;
       default:
         return null;
     }
@@ -70,6 +72,16 @@ function BookList({ books, deleteBook, onUpdateStatus, onUpdateRating, onAddComm
                 >
                   {getStatusIcon(book.status)}
                 </button>
+                {(book.status === "À lire" || book.status === "En cours" || book.status === "Lu") && (
+                    <button
+                      onClick={() => onToggleForSale(book._id || book.id)}
+                      className={`absolute top-12 left-2 p-2 rounded-full ${
+                        book.isForSale ? "bg-green-500" : "bg-gray-200"
+                      } dark:text-green-700`}
+                    >
+                      <FaDollarSign className={book.isForSale ? "text-white" : "text-gray-500"} />
+                    </button>
+                  )}
                 <img
                   src={book.cover}
                   alt={book.title}
@@ -171,6 +183,7 @@ BookList.propTypes = {
       title: PropTypes.string,
       author: PropTypes.string,
       status: PropTypes.string,
+      isForSale: PropTypes.bool,
       rating: PropTypes.number,
       comments: PropTypes.arrayOf(
         PropTypes.shape({
@@ -192,6 +205,7 @@ BookList.propTypes = {
   onAddComment: PropTypes.func.isRequired,
   onDeleteComment: PropTypes.func.isRequired,
   onUpdateComment: PropTypes.func.isRequired,
+  onToggleForSale: PropTypes.func.isRequired,
 };
 
 export default BookList;
