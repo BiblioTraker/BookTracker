@@ -27,7 +27,6 @@ export const BooksProvider = ({ children }) => {
 
     axios.get(`${API_URL}/api/books`, config)
       .then((response) => {
-        console.log('response', response.data);
         setBooks(response.data);
       })
       .catch((error) => {
