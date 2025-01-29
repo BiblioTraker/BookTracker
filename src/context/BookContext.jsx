@@ -27,7 +27,7 @@ export const BooksProvider = ({ children }) => {
       };
 
       const response = await axios.get(`${API_URL}/api/books`, config);
-      console.log('response', response.data);
+
       setBooks(response.data);
     } catch (error) {
       console.error("Erreur lors de la récupération des livres :", error);
@@ -44,7 +44,11 @@ export const BooksProvider = ({ children }) => {
         },
       };
 
-      const response = await axios.post(`${API_URL}/api/books`, newBook, config);
+      const response = await axios.post(
+        `${API_URL}/api/books`,
+        newBook,
+        config
+      );
       setBooks((prevBooks) => [...prevBooks, response.data]);
     } catch (error) {
       console.error("Erreur lors de l'ajout du livre :", error);
@@ -94,28 +98,31 @@ export const BooksProvider = ({ children }) => {
   };
 
   const updateBookRating = (id, rating) => {
-      const ratingNumber = parseInt(rating);
-      const token = JSON.parse(localStorage.getItem("user")).token;
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      };
+    const ratingNumber = parseInt(rating);
+    const token = JSON.parse(localStorage.getItem("user")).token;
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    };
 
-      axios.put(
+    axios
+      .put(
         `${API_URL}/api/books/${id}/rating`,
         { rating: ratingNumber },
         config
-      ).then((response) => {
+      )
+      .then((response) => {
         setBooks((prevBooks) =>
           prevBooks.map((book) =>
             book._id === id ? { ...book, rating: response.data.rating } : book
           )
         );
-      }).catch((error) => {
-        console.error("Erreur lors de la mise à jour de la note :", error);
       })
+      .catch((error) => {
+        console.error("Erreur lors de la mise à jour de la note :", error);
+      });
   };
 
   const addComment = async (bookId, text) => {
@@ -127,10 +134,16 @@ export const BooksProvider = ({ children }) => {
         },
       };
 
-      const response = await axios.post(`${API_URL}/api/books/${bookId}/comments`, { text }, config);
+      const response = await axios.post(
+        `${API_URL}/api/books/${bookId}/comments`,
+        { text },
+        config
+      );
       setBooks((prevBooks) =>
         prevBooks.map((book) =>
-          book._id === bookId ? { ...book, comments: response.data.comments } : book
+          book._id === bookId
+            ? { ...book, comments: response.data.comments }
+            : book
         )
       );
     } catch (error) {
@@ -146,11 +159,16 @@ export const BooksProvider = ({ children }) => {
           Authorization: `Bearer ${token}`,
         },
       };
-  
-      const response = await axios.delete(`${API_URL}/api/books/${bookId}/comments/${commentId}`, config);
+
+      const response = await axios.delete(
+        `${API_URL}/api/books/${bookId}/comments/${commentId}`,
+        config
+      );
       setBooks((prevBooks) =>
         prevBooks.map((book) =>
-          book._id === bookId ? { ...book, comments: response.data.comments } : book
+          book._id === bookId
+            ? { ...book, comments: response.data.comments }
+            : book
         )
       );
     } catch (error) {
@@ -167,16 +185,18 @@ export const BooksProvider = ({ children }) => {
           "Content-Type": "application/json",
         },
       };
-  
+
       const response = await axios.put(
         `${API_URL}/api/books/${bookId}/comments/${commentId}`,
         { text },
         config
       );
-  
+
       setBooks((prevBooks) =>
         prevBooks.map((book) =>
-          book._id === bookId ? { ...book, comments: response.data.comments } : book
+          book._id === bookId
+            ? { ...book, comments: response.data.comments }
+            : book
         )
       );
     } catch (error) {
@@ -186,29 +206,36 @@ export const BooksProvider = ({ children }) => {
 
   const toggleForSale = async (id) => {
     try {
-      console.log("ID transmis :", id);
-  
       const token = JSON.parse(localStorage.getItem("user")).token;
       const config = {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       };
-  
+
       // Faites la requête pour inverser le statut
-      const response = await axios.put(`${API_URL}/api/books/${id}/for-sale`, {}, config);
-  
+      const response = await axios.put(
+        `${API_URL}/api/books/${id}/for-sale`,
+        {},
+        config
+      );
+
       // Mettez à jour l'état local des livres
       setBooks((prevBooks) =>
         prevBooks.map((book) =>
-          book._id === id ? { ...book, isForSale: response.data.isForSale } : book
+          book._id === id
+            ? { ...book, isForSale: response.data.isForSale }
+            : book
         )
       );
     } catch (error) {
-      console.error("Erreur lors de la mise à jour du statut 'À vendre' :", error);
+      console.error(
+        "Erreur lors de la mise à jour du statut 'À vendre' :",
+        error
+      );
     }
   };
-  
+
   useEffect(() => {
     fetchBooks();
   }, []);

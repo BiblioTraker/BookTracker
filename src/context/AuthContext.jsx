@@ -44,21 +44,26 @@ export const AuthProvider = ({ children }) => {
     formData.append("avatar", avatarFile);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/avatar`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${user.token}`, // Utiliser le token de l'utilisateur
-        },
-        body: formData,
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/auth/avatar`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${user.token}`, // Utiliser le token de l'utilisateur
+          },
+          body: formData,
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
-        console.log("Avatar mis à jour :", data.avatar);
 
         // Mettre à jour l'état utilisateur
         setUser((prevUser) => ({ ...prevUser, avatar: data.avatar }));
-        localStorage.setItem("user", JSON.stringify({ ...user, avatar: data.avatar }));
+        localStorage.setItem(
+          "user",
+          JSON.stringify({ ...user, avatar: data.avatar })
+        );
       } else {
         console.error("Erreur lors de l'upload de l'avatar");
       }
@@ -67,9 +72,18 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-
   return (
-    <AuthContext.Provider value={{ user, login, logout, uploadAvatar, canAccessPasswordPages, allowPasswordPageAccess, disallowPasswordPageAccess }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        login,
+        logout,
+        uploadAvatar,
+        canAccessPasswordPages,
+        allowPasswordPageAccess,
+        disallowPasswordPageAccess,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
