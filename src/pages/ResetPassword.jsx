@@ -9,27 +9,29 @@ const ResetPassword = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState({ type: "", content: "" });
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     
     if (password !== confirmPassword) {
       setMessage({ type: "error", content: "Les mots de passe ne correspondent pas" });
       return;
     }
-
-    try {
-      const response = await axios.post(
+  
+    axios
+      .post(
         `${import.meta.env.VITE_API_URL}/api/auth/reset-password/${token}`,
         { password }
-      );
-      setMessage({ type: "success", content: response.data.message });
-      setTimeout(() => navigate("/login"), 3000);
-    } catch (error) {
-      setMessage({
-        type: "error",
-        content: error.response?.data?.error || "Une erreur est survenue"
+      )
+      .then((response) => {
+        setMessage({ type: "success", content: response.data.message });
+        setTimeout(() => navigate("/login"), 3000);
+      })
+      .catch((error) => {
+        setMessage({
+          type: "error",
+          content: error.response?.data?.error || "Une erreur est survenue",
+        });
       });
-    }
   };
 
   return (
