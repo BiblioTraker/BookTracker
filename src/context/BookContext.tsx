@@ -154,7 +154,7 @@ const toggleForSale = (id: string) => {
   const token = user ? JSON.parse(user).token : null;
 
   axios
-    .put(`${API_URL}/api/books/${id}/toggle-sale`, {}, { headers: { Authorization: `Bearer ${token}` } })
+    .put(`${API_URL}/api/books/${id}/for-sale`, {}, { headers: { Authorization: `Bearer ${token}` } })
     .then((response) =>
       setBooks((prevBooks) =>
         prevBooks.map((book) => (book._id === id ? { ...book, isForSale: response.data.isForSale } : book))
