@@ -2,13 +2,6 @@ import { createContext, useContext, useState, useEffect, ReactNode } from "react
 import axios from "axios";
 import { Book } from "../types/types";
 
-// Définition du type pour un commentaire
-interface Comment {
-  _id: string;
-  text: string;
-  name: string;
-}
-
 // Définition du type du contexte Books
 interface BooksContextType {
   books: Book[];
