@@ -1,8 +1,10 @@
 import { useBooks } from "../context/BookContext";
 import { Link } from "react-router-dom";
+import React from "react";
+import { Book } from "../types/types";
 
-const Home = () => {
-  const { books } = useBooks();
+const Home: React.FC = () => {
+  const { books } = useBooks() as { books: Book[] };
 
   return (
     <div className="p-4 bg-gray-100 dark:bg-gray-900 dark:text-white">

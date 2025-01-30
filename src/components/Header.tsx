@@ -1,22 +1,47 @@
-import { useState, useContext, useRef } from "react";
+import { useState, useContext, useRef, RefObject, ChangeEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Moon, Sun, Library } from "lucide-react";
 import AuthContext from "../context/AuthContext";
 import { useBooks } from "../context/BookContext";
 import imageCompression from "browser-image-compression";
-import AvatarModal from './AvatarModal';
+import AvatarEditor from "react-avatar-editor";
+import AvatarModal from "./AvatarModal";
 
+// Définition des props du composant Header
+interface HeaderProps {
+  toggleTheme: () => void;
+  isDarkMode: boolean;
+}
 
-function Header({ toggleTheme, isDarkMode }) {
+// Définition du type pour AuthContext
+interface User {
+  name: string;
+  avatar?: string;
+}
+
+interface AuthContextType {
+  user: User | null;
+  logout: () => void;
+  uploadAvatar: (file: File) => Promise<void>;
+}
+
+// Définition de BookContext
+interface BookContextType {
+  resetBooks: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ toggleTheme, isDarkMode }) => {
   const navigate = useNavigate();
-  const { user, logout, uploadAvatar } = useContext(AuthContext);
-  const { resetBooks } = useBooks();
+  const { user, logout, uploadAvatar } = useContext(AuthContext) as AuthContextType;
+  const { resetBooks } = useBooks() as BookContextType;
 
-  const [isEditingAvatar, setIsEditingAvatar] = useState(false);
-  const [image, setImage] = useState(null);
-  const [isUploading, setIsUploading] = useState(false);
-  const editorRef = useRef(null);
+  // Gestion des états
+  const [isEditingAvatar, setIsEditingAvatar] = useState<boolean>(false);
+  const [image, setImage] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
+  const editorRef = useRef<AvatarEditor>(null!);
 
+  // Gestion de la déconnexion
   const handleLogout = () => {
     navigate("/login");
     logout();
@@ -24,11 +49,13 @@ function Header({ toggleTheme, isDarkMode }) {
     resetBooks();
   };
 
+  // Fermer le modal d'édition d'avatar
   const onCloseAvatar = () => {
-    setImage(null); // Réinitialise l'image
-    setIsEditingAvatar(false); // Ferme le modal
+    setImage(null);
+    setIsEditingAvatar(false);
   };
 
+  // Sauvegarder l'avatar après édition
   const saveAvatar = async () => {
     if (editorRef.current) {
       const canvas = editorRef.current.getImage();
@@ -48,31 +75,32 @@ function Header({ toggleTheme, isDarkMode }) {
     }
   };
 
-  const handleFileChange = async (event) => {
-    const file = event.target.files[0]; // Récupère le fichier sélectionné
+  // Gestion du changement d'image
+  const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
     if (!file) return;
-  
+
     // Vérifie le format du fichier
     if (!["image/jpeg", "image/png", "image/gif"].includes(file.type)) {
       alert("Veuillez télécharger une image au format JPEG, PNG ou GIF.");
       return;
     }
-  
+
     // Options pour la compression
     const options = {
       maxSizeMB: 1, // Limite de taille à 1MB
       maxWidthOrHeight: 512, // Taille maximale de 512x512 pixels
       useWebWorker: true, // Utilisation de WebWorker pour améliorer les performances
     };
-  
+
     try {
       // Compression de l'image
       const compressedFile = await imageCompression(file, options);
-  
+
       // Lecture du fichier compressé pour la prévisualisation
       const reader = new FileReader();
       reader.onload = () => {
-        setImage(reader.result); // Met à jour l'état avec la prévisualisation de l'image
+        setImage(reader.result as string); // Mise à jour avec l'URL de l'image compressée
       };
       reader.readAsDataURL(compressedFile);
     } catch (error) {
@@ -80,8 +108,9 @@ function Header({ toggleTheme, isDarkMode }) {
     }
   };
 
+  // Activer la modification de l'avatar
   const handleEditAvatar = () => {
-    setImage(user?.avatar && `${import.meta.env.VITE_API_URL}${user.avatar}` );
+    setImage(user?.avatar ? `${import.meta.env.VITE_API_URL}${user.avatar}` : null);
     setIsEditingAvatar(true);
   };
 
@@ -91,27 +120,19 @@ function Header({ toggleTheme, isDarkMode }) {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center space-x-4">
             <Library className="w-8 h-8" />
-            <Link to="/" className="text-xl font-bold hover:underline">
-              BiblioTracker
-            </Link>
+            <Link to="/" className="text-xl font-bold hover:underline">BiblioTracker</Link>
           </div>
           <nav className="p-4">
             <ul className="flex justify-between items-center">
               <div className="flex space-x-4">
                 <li>
-                  <Link to="/books" className="hover:underline">
-                    Mes Livres
-                  </Link>
+                  <Link to="/books" className="hover:underline">Mes Livres</Link>
                 </li>
                 <li>
-                  <Link to="/add-book" className="hover:underline">
-                    Ajouter un Livre
-                  </Link>
+                  <Link to="/add-book" className="hover:underline">Ajouter un Livre</Link>
                 </li>
                 <li>
-                  <Link to="/statistics" className="hover:underline">
-                    Statistiques
-                  </Link>
+                  <Link to="/statistics" className="hover:underline">Statistiques</Link>
                 </li>
               </div>
               <div className="ml-4 flex items-center space-x-4">
@@ -132,10 +153,7 @@ function Header({ toggleTheme, isDarkMode }) {
                     </button>
                   </>
                 ) : (
-                  <Link
-                    to="/login"
-                    className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-                  >
+                  <Link to="/login" className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
                     Connexion
                   </Link>
                 )}
@@ -153,7 +171,7 @@ function Header({ toggleTheme, isDarkMode }) {
       <AvatarModal
         isEditingAvatar={isEditingAvatar}
         editorRef={editorRef}
-        image={image}
+        image={image || ""}
         handleFileChange={handleFileChange}
         onCloseAvatar={onCloseAvatar}
         saveAvatar={saveAvatar}
@@ -161,6 +179,6 @@ function Header({ toggleTheme, isDarkMode }) {
       />
     </header>
   );
-}
+};
 
 export default Header;

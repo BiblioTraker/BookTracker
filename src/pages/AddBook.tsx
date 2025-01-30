@@ -1,37 +1,59 @@
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion"; // Import Framer Motion
+import { useState, useEffect, ChangeEvent, FormEvent } from "react";
+import { motion } from "framer-motion";
 import { useBooks } from "../context/BookContext";
 import { AiOutlineClose } from 'react-icons/ai';
 
-const AddBook = () => {
-  const { books, setBooks, addBook } = useBooks(); // Accéder au contexte global pour les livres
-  const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
-  const [isLoading, setIsLoading] = useState(false); // État pour le chargement
-  const [successMessage, setSuccessMessage] = useState(""); // État pour le message de succès
-  const [manualBook, setManualBook] = useState({
+// Interface pour un livre provenant de Google Books API
+interface GoogleBook {
+  id: string;
+  volumeInfo: {
+    title: string;
+    authors?: string[];
+    imageLinks?: {
+      thumbnail?: string;
+    };
+  };
+}
+
+// Interface pour un livre stocké dans le contexte
+interface Book {
+  id?: string;
+  title: string;
+  author: string;
+  cover: string;
+  status: "À lire" | "En cours" | "Lu" | "À acheter";
+}
+
+// Composant principal
+const AddBook: React.FC = () => {
+  const { addBook } = useBooks(); // Utilisation du contexte BookContext
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [searchResults, setSearchResults] = useState<GoogleBook[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [successMessage, setSuccessMessage] = useState<string>("");
+  
+  // État pour l'ajout manuel d'un livre
+  const [manualBook, setManualBook] = useState<Book>({
     title: "",
     author: "",
-    genre: "",
     cover: "",
     status: "À lire",
   });
-  const API_KEY = import.meta.env.VITE_GOOGLE_BOOKS_API_KEY; // Récupère la clé depuis .env
 
+  const API_KEY = import.meta.env.VITE_GOOGLE_BOOKS_API_KEY;
+
+  // Débouncing et recherche de livres avec Google Books API
   useEffect(() => {
-    // Débouncing pour la recherche
     const fetchBooks = async () => {
       if (searchTerm.trim() === "") {
         setSearchResults([]);
         return;
       }
 
-      setIsLoading(true); // Début du chargement
+      setIsLoading(true);
       try {
         const response = await fetch(
-          `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(
-            searchTerm
-          )}&key=${API_KEY}`
+          `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(searchTerm)}&key=${API_KEY}`
         );
         const data = await response.json();
         setSearchResults(data.items || []);
@@ -39,59 +61,41 @@ const AddBook = () => {
         console.error("Erreur lors de la recherche :", error);
         alert("Impossible de récupérer les résultats. Vérifiez votre clé API.");
       } finally {
-        setIsLoading(false); // Fin du chargement
+        setIsLoading(false);
       }
     };
 
-    const debounceTimeout = setTimeout(() => {
-      fetchBooks();
-    }, 500); // Lance la recherche après 500ms
-
-    return () => clearTimeout(debounceTimeout); // Nettoie le timeout si le terme de recherche change rapidement
+    const debounceTimeout = setTimeout(fetchBooks, 500);
+    return () => clearTimeout(debounceTimeout);
   }, [searchTerm, API_KEY]);
 
-  // Fonction pour ajouter un livre depuis les résultats
-  const handleAddBook = (book) => {
+  // Ajouter un livre depuis les résultats Google Books
+  const handleAddBook = (book: GoogleBook) => {
     const newBook = {
       id: book.id,
       title: book.volumeInfo.title,
       author: book.volumeInfo.authors?.join(", ") || "Auteur inconnu",
       cover: book.volumeInfo.imageLinks?.thumbnail || "",
-      status: "À lire",
+      status: "À lire" as const,
     };
-    addBook(newBook); // Appeler la fonction addBook du contexte
-    // Afficher le message de succès
+
+    addBook(newBook);
     setSuccessMessage(`Le livre "${newBook.title}" a été ajouté avec succès.`);
-    setTimeout(() => setSuccessMessage(""), 3000); // Effacer le message après 3 secondes
+    setTimeout(() => setSuccessMessage(""), 3000);
   };
 
-  const handleAddManualBook = async (e) => {
+  // Ajouter un livre manuellement
+  const handleAddManualBook = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!manualBook.title.trim() || !manualBook.author.trim()) {
       alert("Le titre et l'auteur sont obligatoires.");
       return;
     }
 
-    const newBook = {
-      title: manualBook.title,
-      author: manualBook.author,
-      genre: manualBook.genre || "Inconnu",
-      cover: manualBook.cover || "",
-      status: "À lire",
-    };
-
     try {
-      await addBook(newBook);
-
-      setSuccessMessage(`Le livre "${newBook.title}" a été ajouté avec succès.`);
-      setManualBook({
-        title: "",
-        author: "",
-        genre: "",
-        cover: "",
-        status: "À lire",
-      });
-
+      await addBook(manualBook);
+      setSuccessMessage(`Le livre "${manualBook.title}" a été ajouté avec succès.`);
+      setManualBook({ title: "", author: "", cover: "", status: "À lire" });
       setTimeout(() => setSuccessMessage(""), 3000);
     } catch (error) {
       console.error("Erreur lors de l'ajout manuel du livre :", error);
@@ -99,11 +103,12 @@ const AddBook = () => {
     }
   };
 
+  // Effacer la recherche
   const clearSearch = () => {
     setSearchTerm('');
     setSearchResults([]);
   };
-
+  
   return (
     <div className="p-4 mt-8 bg-gray-100 dark:bg-gray-900 dark:text-white">
     <div className="p-4 mt-8 bg-white dark:bg-gray-700 dark:text-gray-200 rounded shadow-md mx-4 sm:mx-8 md:mx-16 lg:mx-32">
@@ -189,15 +194,6 @@ const AddBook = () => {
             placeholder="Auteur"
             value={manualBook.author}
             onChange={(e) => setManualBook({ ...manualBook, author: e.target.value })}
-            className="border border-gray-300 rounded p-2 w-full dark:text-black"
-          />
-          <input
-            type="text"
-            id="genre"
-            name="genre"
-            placeholder="Genre"
-            value={manualBook.genre}
-            onChange={(e) => setManualBook({ ...manualBook, genre: e.target.value })}
             className="border border-gray-300 rounded p-2 w-full dark:text-black"
           />
           <input

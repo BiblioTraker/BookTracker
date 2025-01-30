@@ -1,38 +1,55 @@
-import { useState, useContext } from "react";
+import { useState, useContext, FormEvent } from "react";
 import AuthContext from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
+import { GoogleOAuthProvider, GoogleLogin, CredentialResponse } from '@react-oauth/google';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
-const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [emailAutoComplete, setEmailAutoComplete] = useState("off");
-  const [passwordAutoComplete, setPasswordAutoComplete] = useState("off");
-  const { login, allowPasswordPageAccess } = useContext(AuthContext);
+// Interface pour AuthContext
+interface AuthContextType {
+  login: (userData: any) => void;
+  allowPasswordPageAccess: () => void;
+}
+
+const Login: React.FC = () => {
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [emailAutoComplete, setEmailAutoComplete] = useState<string>("off");
+  const [passwordAutoComplete, setPasswordAutoComplete] = useState<string>("off");
+  
+  const { login, allowPasswordPageAccess } = useContext(AuthContext) as AuthContextType;
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (response.ok) {
-      login(data);
-      navigate("/");
-    } else {
-      alert(data.message);
+      if (response.ok) {
+        login(data);
+        navigate("/");
+      } else {
+        alert(data.message);
+      }
+    } catch (error) {
+      console.error("Erreur réseau :", error);
+      alert("Impossible de se connecter au serveur. Veuillez réessayer plus tard.");
     }
   };
 
-  const handleGoogleSuccess = async (response) => {
+  const handleGoogleSuccess = async (response: CredentialResponse) => {
+    if (!response.credential) {
+      alert("Connexion Google échouée.");
+      return;
+    }
+
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/google`, {
         method: "POST",
@@ -50,12 +67,11 @@ const Login = () => {
       }
     } catch (error) {
       console.error("Erreur réseau :", error);
-      alert("Impossible de se connecter au serveur. Veuillez réessayer plus tard.");
+      alert("Impossible de se connecter via Google. Veuillez réessayer.");
     }
   };
 
-  const handleGoogleFailure = (error) => {
-    console.error("Erreur de connexion Google :", error);
+  const handleGoogleFailure = () => {
     alert("Erreur lors de la connexion avec Google. Veuillez réessayer.");
   };
 
@@ -73,10 +89,7 @@ const Login = () => {
           </h2>
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-              >
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Email
               </label>
               <input
@@ -91,10 +104,7 @@ const Login = () => {
               />
             </div>
             <div className="mb-4 relative">
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-              >
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Mot de passe
               </label>
               <div className="relative">
@@ -108,10 +118,7 @@ const Login = () => {
                   className="mt-1 block w-full pl-10 px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-gray-300"
                   required
                 />
-                <div
-                  className="absolute inset-y-0 left-0 pl-3 flex items-center cursor-pointer"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center cursor-pointer" onClick={() => setShowPassword(!showPassword)}>
                   {showPassword ? <FaEyeSlash /> : <FaEye />}
                 </div>
               </div>
@@ -124,27 +131,16 @@ const Login = () => {
             </button>
           </form>
           <div className="mt-4">
-            <GoogleLogin
-              onSuccess={handleGoogleSuccess}
-              onFailure={handleGoogleFailure}
-              buttonText="Se connecter avec Google"
-              className="w-full flex justify-center"
-            />
+            <GoogleLogin onSuccess={handleGoogleSuccess} onError={handleGoogleFailure} />
           </div>
           <p className="mt-4 text-sm text-center text-gray-600 dark:text-gray-400">
-            <button
-              onClick={handleForgotPasswordClick}
-              className="text-indigo-500 hover:underline dark:text-indigo-400"
-            >
+            <button onClick={handleForgotPasswordClick} className="text-indigo-500 hover:underline dark:text-indigo-400">
               Mot de passe oublié ?
             </button>
           </p>
           <p className="mt-4 text-sm text-center text-gray-600 dark:text-gray-400">
             Vous n'avez pas de compte ?{" "}
-            <a
-              href="/register"
-              className="text-indigo-500 hover:underline dark:text-indigo-400"
-            >
+            <a href="/register" className="text-indigo-500 hover:underline dark:text-indigo-400">
               S'inscrire
             </a>
           </p>

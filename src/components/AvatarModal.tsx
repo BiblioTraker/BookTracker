@@ -1,7 +1,26 @@
 import { motion } from 'framer-motion';
 import AvatarEditor from 'react-avatar-editor';
+import { ChangeEvent, RefObject } from "react";
 
-const AvatarModal = ({ isEditingAvatar, editorRef, image, handleFileChange, onCloseAvatar, saveAvatar, isUploading }) => {
+interface AvatarModalProps {
+  isEditingAvatar: boolean;
+  editorRef: RefObject<AvatarEditor>;
+  image: string | "";
+  handleFileChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  onCloseAvatar: () => void;
+  saveAvatar: () => void;
+  isUploading: boolean;
+}
+
+const AvatarModal: React.FC<AvatarModalProps> = ({
+  isEditingAvatar,
+  editorRef,
+  image,
+  handleFileChange,
+  onCloseAvatar,
+  saveAvatar,
+  isUploading,
+}) => {
   return (
     isEditingAvatar && (
       <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, ReactNode } from "react";
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Home from './pages/Home';
 import Books from './pages/Books';
@@ -15,6 +15,23 @@ import ResetPassword from "./pages/ResetPassword";
 import PublicRoute from "./components/PublicRoute"; // Importer PublicRoute
 import StatisticsPage from "./pages/StatisticsPage";
 
+// Typage du composant PageTransition
+interface PageTransitionProps {
+  children: ReactNode;
+}
+
+const PageTransition: React.FC<PageTransitionProps> = ({ children }) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: -50 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: 50 }}
+      transition={{ duration: 0.4 }}
+    >
+      {children}
+    </motion.div>
+  );
+};
 
 const App = () => {
   const location = useLocation();
@@ -131,18 +148,6 @@ const App = () => {
   );
 };
 
-// Composant pour les transitions
-const PageTransition = ({ children }) => {
-  return (
-    <motion.div
-      initial={{ opacity: 0, x: -50 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: 50 }}
-      transition={{ duration: 0.4 }}
-    >
-      {children}
-    </motion.div>
-  );
-};
+
 
 export default App;

@@ -1,11 +1,18 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, FormEvent } from "react";
 import AuthContext from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
-const ForgotPassword = () => {
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState(null);
-  const { canAccessPasswordPages, disallowPasswordPageAccess } = useContext(AuthContext);
+// Interface pour le contexte d'authentification
+interface AuthContextType {
+  canAccessPasswordPages: boolean;
+  disallowPasswordPageAccess: () => void;
+}
+
+const ForgotPassword: React.FC = () => {
+  const [email, setEmail] = useState<string>("");
+  const [message, setMessage] = useState<string | null>(null);
+  
+  const { canAccessPasswordPages, disallowPasswordPageAccess } = useContext(AuthContext) as AuthContextType;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -14,7 +21,7 @@ const ForgotPassword = () => {
     }
   }, [canAccessPasswordPages, navigate]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
