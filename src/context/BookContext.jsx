@@ -25,7 +25,8 @@ export const BooksProvider = ({ children }) => {
       },
     };
 
-    axios.get(`${API_URL}/api/books`, config)
+    axios
+      .get(`${API_URL}/api/books`, config)
       .then((response) => {
         setBooks(response.data);
       })
@@ -43,7 +44,8 @@ export const BooksProvider = ({ children }) => {
       },
     };
 
-    axios.post(`${API_URL}/api/books`, newBook, config)
+    axios
+      .post(`${API_URL}/api/books`, newBook, config)
       .then((response) => {
         setBooks((prevBooks) => [...prevBooks, response.data]);
       })
@@ -60,7 +62,8 @@ export const BooksProvider = ({ children }) => {
       },
     };
 
-    axios.delete(`${API_URL}/api/books/${id}`, config)
+    axios
+      .delete(`${API_URL}/api/books/${id}`, config)
       .then(() => {
         setBooks((prevBooks) => prevBooks.filter((book) => book._id !== id));
       })
@@ -78,7 +81,8 @@ export const BooksProvider = ({ children }) => {
       },
     };
 
-    axios.put(`${API_URL}/api/books/${id}`, { status: newStatus }, config)
+    axios
+      .put(`${API_URL}/api/books/${id}`, { status: newStatus }, config)
       .then((response) => {
         setBooks((prevBooks) =>
           prevBooks.map((book) =>
@@ -101,7 +105,12 @@ export const BooksProvider = ({ children }) => {
       },
     };
 
-    axios.put(`${API_URL}/api/books/${id}/rating`, { rating: ratingNumber }, config)
+    axios
+      .put(
+        `${API_URL}/api/books/${id}/rating`,
+        { rating: ratingNumber },
+        config
+      )
       .then((response) => {
         setBooks((prevBooks) =>
           prevBooks.map((book) =>
@@ -122,11 +131,14 @@ export const BooksProvider = ({ children }) => {
       },
     };
 
-    axios.post(`${API_URL}/api/books/${bookId}/comments`, { text }, config)
+    axios
+      .post(`${API_URL}/api/books/${bookId}/comments`, { text }, config)
       .then((response) => {
         setBooks((prevBooks) =>
           prevBooks.map((book) =>
-            book._id === bookId ? { ...book, comments: response.data.comments } : book
+            book._id === bookId
+              ? { ...book, comments: response.data.comments }
+              : book
           )
         );
       })
@@ -143,11 +155,14 @@ export const BooksProvider = ({ children }) => {
       },
     };
 
-    axios.delete(`${API_URL}/api/books/${bookId}/comments/${commentId}`, config)
+    axios
+      .delete(`${API_URL}/api/books/${bookId}/comments/${commentId}`, config)
       .then((response) => {
         setBooks((prevBooks) =>
           prevBooks.map((book) =>
-            book._id === bookId ? { ...book, comments: response.data.comments } : book
+            book._id === bookId
+              ? { ...book, comments: response.data.comments }
+              : book
           )
         );
       })
@@ -165,11 +180,18 @@ export const BooksProvider = ({ children }) => {
       },
     };
 
-    axios.put(`${API_URL}/api/books/${bookId}/comments/${commentId}`, { text }, config)
+    axios
+      .put(
+        `${API_URL}/api/books/${bookId}/comments/${commentId}`,
+        { text },
+        config
+      )
       .then((response) => {
         setBooks((prevBooks) =>
           prevBooks.map((book) =>
-            book._id === bookId ? { ...book, comments: response.data.comments } : book
+            book._id === bookId
+              ? { ...book, comments: response.data.comments }
+              : book
           )
         );
       })
@@ -188,16 +210,22 @@ export const BooksProvider = ({ children }) => {
       },
     };
 
-    axios.put(`${API_URL}/api/books/${id}/for-sale`, {}, config)
+    axios
+      .put(`${API_URL}/api/books/${id}/for-sale`, {}, config)
       .then((response) => {
         setBooks((prevBooks) =>
           prevBooks.map((book) =>
-            book._id === id ? { ...book, isForSale: response.data.isForSale } : book
+            book._id === id
+              ? { ...book, isForSale: response.data.isForSale }
+              : book
           )
         );
       })
       .catch((error) => {
-        console.error("Erreur lors de la mise à jour du statut 'À vendre' :", error);
+        console.error(
+          "Erreur lors de la mise à jour du statut 'À vendre' :",
+          error
+        );
       });
   };
 

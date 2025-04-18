@@ -9,11 +9,10 @@ import { AuthProvider } from "./context/AuthContext";
 import Login from "./pages/Login"; // Nouvelle page Login
 import Register from "./pages/Register"; // Nouvelle page Register
 import PrivateRoute from "./components/PrivateRoute"; // Importer PrivateRoute
-import ForgotPassword from './pages/ForgotPassword';
+import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import PublicRoute from "./components/PublicRoute"; // Importer PublicRoute
 import StatisticsPage from "./pages/StatisticsPage";
-
 
 const App = () => {
   const location = useLocation();
@@ -99,9 +98,9 @@ const App = () => {
                   </PrivateRoute>
                 }
               />
-          </Routes>
-        </AnimatePresence>
-      </div>
+            </Routes>
+          </AnimatePresence>
+        </div>
       </AuthProvider>
     </BooksProvider>
   );

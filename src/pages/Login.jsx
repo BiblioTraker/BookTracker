@@ -1,8 +1,9 @@
 import { useState, useContext } from "react";
 import AuthContext from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import GoogleAuth from "../components/Login/GoogleAuth";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -16,11 +17,14 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/api/auth/login`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      }
+    );
 
     const data = await response.json();
 
@@ -30,33 +34,6 @@ const Login = () => {
     } else {
       alert(data.message);
     }
-  };
-
-  const handleGoogleSuccess = async (response) => {
-    try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/google`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token: response.credential }),
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        login(data);
-        navigate("/");
-      } else {
-        alert(data.message);
-      }
-    } catch (error) {
-      console.error("Erreur réseau :", error);
-      alert("Impossible de se connecter au serveur. Veuillez réessayer plus tard.");
-    }
-  };
-
-  const handleGoogleFailure = (error) => {
-    console.error("Erreur de connexion Google :", error);
-    alert("Erreur lors de la connexion avec Google. Veuillez réessayer.");
   };
 
   const handleForgotPasswordClick = () => {
@@ -90,7 +67,7 @@ const Login = () => {
                 required
               />
             </div>
-            <div className="mb-4 relative">
+            <div className="relative mb-4">
               <label
                 htmlFor="password"
                 className="block text-sm font-medium text-sepia"
@@ -109,7 +86,7 @@ const Login = () => {
                   required
                 />
                 <div
-                  className="absolute inset-y-0 left-0 pl-3 flex items-center cursor-pointer"
+                  className="absolute inset-y-0 left-0 flex items-center pl-3 cursor-pointer"
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? <FaEyeSlash /> : <FaEye />}
@@ -124,12 +101,7 @@ const Login = () => {
             </button>
           </form>
           <div className="mt-4">
-            <GoogleLogin
-              onSuccess={handleGoogleSuccess}
-              onFailure={handleGoogleFailure}
-              buttonText="Se connecter avec Google"
-              className="w-full flex justify-center"
-            />
+            <GoogleAuth />
           </div>
           <p className="mt-4 text-sm text-center text-sepia">
             <button
@@ -145,7 +117,7 @@ const Login = () => {
               href="/register"
               className="text-rust hover:text-teal underline transition"
             >
-              S'inscrire
+              S&apos;inscrire
             </a>
           </p>
         </div>

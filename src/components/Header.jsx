@@ -50,24 +50,24 @@ function Header() {
   const handleFileChange = async (event) => {
     const file = event.target.files[0]; // Récupère le fichier sélectionné
     if (!file) return;
-  
+
     // Vérifie le format du fichier
     if (!["image/jpeg", "image/png", "image/gif"].includes(file.type)) {
       alert("Veuillez télécharger une image au format JPEG, PNG ou GIF.");
       return;
     }
-  
+
     // Options pour la compression
     const options = {
       maxSizeMB: 1, // Limite de taille à 1MB
       maxWidthOrHeight: 512, // Taille maximale de 512x512 pixels
       useWebWorker: true, // Utilisation de WebWorker pour améliorer les performances
     };
-  
+
     try {
       // Compression de l'image
       const compressedFile = await imageCompression(file, options);
-  
+
       // Lecture du fichier compressé pour la prévisualisation
       const reader = new FileReader();
       reader.onload = () => {
@@ -80,7 +80,7 @@ function Header() {
   };
 
   const handleEditAvatar = () => {
-    setImage(user?.avatar && `${import.meta.env.VITE_API_URL}${user.avatar}` );
+    setImage(user?.avatar && `${import.meta.env.VITE_API_URL}${user.avatar}`);
     setIsEditingAvatar(true);
   };
 
@@ -95,7 +95,7 @@ function Header() {
             </Link>
           </div>
           <nav className="p-4">
-            <ul className="flex justify-between items-center">
+            <ul className="flex items-center justify-between">
               <div className="flex space-x-4">
                 <li>
                   <Link to="/books" className="text-sepia hover:text-rust transition">
@@ -113,12 +113,18 @@ function Header() {
                   </Link>
                 </li>
               </div>
-              <div className="ml-4 flex items-center space-x-4">
+              <div className="flex items-center ml-4 space-x-4">
                 {user ? (
                   <>
                     <span className="text-sm">Bienvenue, {user.name} !</span>
                     <img
-                      src={user?.avatar ? `${import.meta.env.VITE_API_URL}${user.avatar}` : "/default-avatar.png"}
+                      src={
+                        user?.avatar
+                          ? `${import.meta.env.VITE_API_URL}${user.avatar}`
+                          : `${
+                              import.meta.env.VITE_API_URL
+                            }/uploads/avatars/default-avatar.png`
+                      }
                       alt="User Avatar"
                       className="w-10 h-10 rounded-full cursor-pointer border-2 border-sepia"
                       onClick={handleEditAvatar}
