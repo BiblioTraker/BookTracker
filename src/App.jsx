@@ -1,9 +1,8 @@
-import { useState, useEffect } from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
-import Home from "./pages/Home";
-import Books from "./pages/Books";
-import AddBook from "./pages/AddBook";
-import Header from "./components/Header";
+import { Routes, Route, useLocation } from 'react-router-dom';
+import Home from './pages/Home';
+import Books from './pages/Books';
+import AddBook from './pages/AddBook';
+import Header from './components/Header';
 import { AnimatePresence, motion } from "framer-motion";
 import { BooksProvider } from "./context/BookContext";
 import { AuthProvider } from "./context/AuthContext";
@@ -17,104 +16,79 @@ import StatisticsPage from "./pages/StatisticsPage";
 
 const App = () => {
   const location = useLocation();
-  const [isDarkMode, setIsDarkMode] = useState(false);
-
-  // Charger le thème depuis localStorage
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme === "dark") {
-      setIsDarkMode(true);
-      document.documentElement.classList.add("dark");
-    }
-  }, []);
-
-  // Sauvegarder le thème dans localStorage
-  useEffect(() => {
-    if (isDarkMode) {
-      localStorage.setItem("theme", "dark");
-      document.documentElement.classList.add("dark");
-    } else {
-      localStorage.setItem("theme", "light");
-      document.documentElement.classList.remove("dark");
-    }
-  }, [isDarkMode]);
-
-  const toggleTheme = () => setIsDarkMode((prev) => !prev);
 
   return (
     <BooksProvider>
-      <AuthProvider>
-        <div
-          className={`min-h-screen ${
-            isDarkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900"
-          }`}
-        >
-          <Header toggleTheme={toggleTheme} isDarkMode={isDarkMode} />
-          <AnimatePresence mode="wait">
-            <Routes location={location} key={location.pathname}>
-              <Route
-                path="/"
-                element={
+    <AuthProvider>
+      <div className="min-h-screen bg-parchment text-sepia">
+        <Header />
+        <AnimatePresence mode="wait">
+          <Routes location={location} key={location.pathname}>
+            <Route
+              path="/"
+              element={
+                <PageTransition>
+                  <Home />
+                </PageTransition>
+              }
+            />
+            {/* Routes pour l'authentification */}
+            <Route
+              path="/login"
+              element={
+                <PublicRoute>
+                <PageTransition>
+                  <Login />
+                </PageTransition>
+                </PublicRoute>
+              }
+            />
+            <Route
+              path="/register"
+              element={
+                <PublicRoute>
+                <PageTransition>
+                  <Register />
+                </PageTransition>
+                </PublicRoute>
+              }
+            />
+            <Route 
+            path="/forgot-password" 
+            element={
+              <PageTransition>
+                <ForgotPassword />
+              </PageTransition>
+            }
+            />
+            <Route 
+            path="/reset-password/:token" 
+            element={
+                <ResetPassword />
+            } 
+            />
+            {/* Routes protégées */}
+            <Route
+              path="/books"
+              element={
+                <PrivateRoute>
                   <PageTransition>
-                    <Home />
+                    <Books />
                   </PageTransition>
-                }
-              />
-              {/* Routes pour l'authentification */}
-              <Route
-                path="/login"
-                element={
-                  <PublicRoute>
-                    <PageTransition>
-                      <Login />
-                    </PageTransition>
-                  </PublicRoute>
-                }
-              />
-              <Route
-                path="/register"
-                element={
-                  <PublicRoute>
-                    <PageTransition>
-                      <Register />
-                    </PageTransition>
-                  </PublicRoute>
-                }
-              />
-              <Route
-                path="/forgot-password"
-                element={
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/add-book"
+              element={
+                <PrivateRoute>
                   <PageTransition>
-                    <ForgotPassword />
+                    <AddBook />
                   </PageTransition>
-                }
-              />
-              <Route
-                path="/reset-password/:token"
-                element={<ResetPassword />}
-              />
-              {/* Routes protégées */}
-              <Route
-                path="/books"
-                element={
-                  <PrivateRoute>
-                    <PageTransition>
-                      <Books />
-                    </PageTransition>
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/add-book"
-                element={
-                  <PrivateRoute>
-                    <PageTransition>
-                      <AddBook />
-                    </PageTransition>
-                  </PrivateRoute>
-                }
-              />
-              <Route
+                </PrivateRoute>
+              }
+            />
+            <Route
                 path="/statistics"
                 element={
                   <PrivateRoute>

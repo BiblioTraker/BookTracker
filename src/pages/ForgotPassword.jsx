@@ -39,9 +39,9 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-800">
-      <div className="w-full max-w-md bg-white dark:bg-gray-900 rounded-lg shadow-md p-6">
-        <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6 text-center">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
+        <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
           Mot de passe oublié
         </h2>
         {message && (
@@ -53,7 +53,7 @@ const ForgotPassword = () => {
           <div className="mb-4">
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+              className="block text-sm font-medium text-gray-700"
             >
               Email
             </label>
@@ -62,7 +62,7 @@ const ForgotPassword = () => {
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 block w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-gray-300"
+              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
               required
             />
           </div>

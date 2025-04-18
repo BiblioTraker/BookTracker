@@ -1,4 +1,3 @@
-// src/components/Statistics.jsx
 import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
 import { FaRedo } from "react-icons/fa";
 
@@ -17,7 +16,7 @@ function Statistics({ books, onFilter }) {
   };
 
   const data = getStatusCounts();
-  const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+  const COLORS = ['#5C1A1A', '#6B9E9F', '#A17F59', '#E1D0C0'];
 
   const handleClick = (data) => {
     onFilter(data.name);
@@ -28,17 +27,17 @@ function Statistics({ books, onFilter }) {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100 dark:bg-gray-900">
-      <div className="relative p-6 bg-white rounded-lg shadow-lg dark:bg-gray-800 w-full max-w-4xl">
+    <div className="flex justify-center items-center min-h-screen bg-parchment text-sepia">
+      <div className="relative p-6 bg-parchment text-sepia rounded-2xl shadow-lg w-full max-w-4xl">
         <button
           onClick={handleReset}
-          className="absolute top-4 right-4 p-2 rounded-full bg-gray-200 dark:bg-gray-700"
+          className="absolute top-4 right-4 p-2 rounded-full bg-parchment hover:bg-teal transition"
           title="Réinitialiser les filtres"
         >
-          <FaRedo className="text-gray-600 dark:text-gray-300" />
+          <FaRedo className="text-sepia" />
         </button>
-        <h2 className="text-2xl font-bold mb-4 text-center">Mes statistiques</h2>
-        <div className="flex">
+        <h2 className="text-3xl font-heading text-rust mb-6 text-center">Mes statistiques</h2>
+        <div className="flex flex-col lg:flex-row items-center justify-center gap-8">
           <PieChart width={600} height={450}>
             <Pie
               data={data}
@@ -58,7 +57,7 @@ function Statistics({ books, onFilter }) {
             <Tooltip />
             <Legend />
           </PieChart>
-          <div className="mt-4 dark:text-white text-center flex flex-col justify-center">
+          <div className="mt-4 text-center flex flex-col justify-center space-y-1 text-sepia font-body">
             <p><strong>Total :</strong> {books.length} livres</p>
             {data.map((item) => (
               <p key={item.name}>

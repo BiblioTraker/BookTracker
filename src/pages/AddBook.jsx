@@ -105,9 +105,9 @@ const AddBook = () => {
   };
 
   return (
-    <div className="p-4 mt-8 bg-gray-100 dark:bg-gray-900 dark:text-white">
-    <div className="p-4 mt-8 bg-white dark:bg-gray-700 dark:text-gray-200 rounded shadow-md mx-4 sm:mx-8 md:mx-16 lg:mx-32">
-      <h2 className="text-2xl font-bold mb-4">Ajouter un Livre</h2>
+    <div className="min-h-screen p-6 bg-parchment text-sepia">
+    <div className="p-6 mt-8 bg-parchment text-sepia rounded-2xl shadow-lg mx-4 sm:mx-8 md:mx-16 lg:mx-32">
+      <h2 className="text-3xl font-heading text-rust mb-6">Ajouter un Livre</h2>
       {/* Recherche de livres */}
       <div className="mb-4 flex items-center">
         <input
@@ -117,23 +117,23 @@ const AddBook = () => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="Rechercher un livre"
-          className="border border-gray-300 rounded p-2 w-1/2 dark:text-black"
+          className="border border-sepia p-2 rounded-md w-1/2 bg-parchment text-sepia placeholder-sepia"
         />
         {searchTerm && (
           <AiOutlineClose
           onClick={clearSearch}
-          className="ml-2 text-red-500 cursor-pointer"
+          className="ml-2 text-rust cursor-pointer"
           size={24}
         />
         )}
       </div>
-      {isLoading && <p className="text-gray-500">Recherche en cours...</p>}
+      {isLoading && <p className="text-sepia">Recherche en cours...</p>}
       {successMessage && (
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
-          className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-100 text-green-800 p-3 rounded shadow-lg z-50"
+          className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-teal text-parchment p-3 rounded-lg shadow-lg z-50 transition"
         >
           {successMessage}
         </motion.div>
@@ -150,20 +150,20 @@ const AddBook = () => {
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.3 }}
-            className="bg-white shadow-md rounded-md p-4 flex flex-col items-center"
+            className="bg-parchment text-sepia rounded-2xl shadow-lg p-6 flex flex-col items-center"
           >
             <img
               src={book.volumeInfo.imageLinks?.thumbnail || ""}
               alt={book.volumeInfo.title}
               className="w-32 h-48 object-cover mb-4"
             />
-            <h3 className="text-lg font-semibold text-black">{book.volumeInfo.title}</h3>
-            <p className="text-gray-500">
+            <h3 className="text-lg font-heading text-rust mb-2">{book.volumeInfo.title}</h3>
+            <p className="text-sepia mb-4">
               Auteur : {book.volumeInfo.authors?.join(", ") || "Auteur inconnu"}
             </p>
             <button
               onClick={() => handleAddBook(book)}
-              className="bg-green-500 text-white px-4 py-2 rounded mt-2"
+              className="mt-2 px-6 py-3 bg-rust text-parchment rounded-lg shadow hover:bg-teal transition"
             >
               Ajouter
             </button>
@@ -171,7 +171,7 @@ const AddBook = () => {
         ))}
       </motion.div>
       <div className="mt-8">
-        <h3 className="text-xl font-bold mb-4">Ajouter un Livre Manuellement</h3>
+        <h3 className="text-2xl font-heading text-rust mb-6">Ajouter un Livre Manuellement</h3>
         <form onSubmit={handleAddManualBook} className="space-y-4">
           <input
             type="text"
@@ -180,7 +180,7 @@ const AddBook = () => {
             placeholder="Titre"
             value={manualBook.title}
             onChange={(e) => setManualBook({ ...manualBook, title: e.target.value })}
-            className="border border-gray-300 rounded p-2 w-full dark:text-black"
+            className="border border-sepia p-2 rounded-md w-full bg-parchment text-sepia placeholder-sepia"
           />
           <input
             type="text"
@@ -189,7 +189,7 @@ const AddBook = () => {
             placeholder="Auteur"
             value={manualBook.author}
             onChange={(e) => setManualBook({ ...manualBook, author: e.target.value })}
-            className="border border-gray-300 rounded p-2 w-full dark:text-black"
+            className="border border-sepia p-2 rounded-md w-full bg-parchment text-sepia placeholder-sepia"
           />
           <input
             type="text"
@@ -198,7 +198,7 @@ const AddBook = () => {
             placeholder="Genre"
             value={manualBook.genre}
             onChange={(e) => setManualBook({ ...manualBook, genre: e.target.value })}
-            className="border border-gray-300 rounded p-2 w-full dark:text-black"
+            className="border border-sepia p-2 rounded-md w-full bg-parchment text-sepia placeholder-sepia"
           />
           <input
             type="text"
@@ -207,11 +207,11 @@ const AddBook = () => {
             placeholder="URL de la couverture (facultatif)"
             value={manualBook.cover}
             onChange={(e) => setManualBook({ ...manualBook, cover: e.target.value })}
-            className="border border-gray-300 rounded p-2 w-full dark:text-black"
+            className="border border-sepia p-2 rounded-md w-full bg-parchment text-sepia placeholder-sepia"
           />
           <button
             type="submit"
-            className="bg-green-500 text-white px-4 py-2 rounded"
+            className="px-6 py-3 bg-rust text-parchment rounded-lg shadow hover:bg-teal transition"
           >
             Ajouter le Livre
           </button>
@@ -223,4 +223,3 @@ const AddBook = () => {
 };
 
 export default AddBook;
-

@@ -4,15 +4,15 @@ import AvatarEditor from 'react-avatar-editor';
 const AvatarModal = ({ isEditingAvatar, editorRef, image, handleFileChange, onCloseAvatar, saveAvatar, isUploading }) => {
   return (
     isEditingAvatar && (
-      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="fixed inset-0 flex items-center justify-center bg-sepia/50">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.9 }}
           transition={{ duration: 0.3 }}
-          className="bg-white p-4 rounded shadow-lg"
+          className="bg-parchment text-sepia p-6 rounded-2xl shadow-lg"
         >
-          <h2 className="text-lg font-bold mb-2">Modifier l'avatar</h2>
+          <h2 className="text-2xl font-heading text-rust mb-4">Modifier l'avatar</h2>
           <AvatarEditor
             ref={editorRef}
             image={image}
@@ -27,7 +27,7 @@ const AvatarModal = ({ isEditingAvatar, editorRef, image, handleFileChange, onCl
           <div className="flex flex-col items-center justify-center mt-4">
             <label
               htmlFor="file-input"
-              className="cursor-pointer px-4 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 transition-colors duration-200"
+              className="cursor-pointer px-4 py-2 bg-rust text-parchment rounded-lg shadow hover:bg-teal transition"
             >
               Choisir un fichier
             </label>
@@ -42,13 +42,13 @@ const AvatarModal = ({ isEditingAvatar, editorRef, image, handleFileChange, onCl
           <div className="flex justify-end mt-4">
             <button
               onClick={onCloseAvatar}
-              className="mr-2 px-4 py-2 bg-gray-400 text-white rounded"
+              className="mr-2 px-4 py-2 bg-sepia text-parchment rounded-lg shadow hover:bg-teal transition"
             >
               Annuler
             </button>
             <button
               onClick={saveAvatar}
-              className="px-4 py-2 bg-blue-500 text-white rounded"
+              className="px-4 py-2 bg-rust text-parchment rounded-lg shadow hover:bg-teal transition"
               disabled={isUploading}
             >
               {isUploading ? "Sauvegarde en cours..." : "Sauvegarder"}
