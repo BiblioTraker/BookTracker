@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Home from './pages/Home';
 import Books from './pages/Books';
@@ -18,35 +17,12 @@ import StatisticsPage from "./pages/StatisticsPage";
 
 const App = () => {
   const location = useLocation();
-  const [isDarkMode, setIsDarkMode] = useState(false);
-
-  // Charger le thème depuis localStorage
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme === "dark") {
-      setIsDarkMode(true);
-      document.documentElement.classList.add("dark");
-    }
-  }, []);
-
-  // Sauvegarder le thème dans localStorage
-  useEffect(() => {
-    if (isDarkMode) {
-      localStorage.setItem("theme", "dark");
-      document.documentElement.classList.add("dark");
-    } else {
-      localStorage.setItem("theme", "light");
-      document.documentElement.classList.remove("dark");
-    }
-  }, [isDarkMode]);
-
-  const toggleTheme = () => setIsDarkMode((prev) => !prev);
 
   return (
     <BooksProvider>
     <AuthProvider>
-      <div className={`min-h-screen ${isDarkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900"}`}>
-        <Header toggleTheme={toggleTheme} isDarkMode={isDarkMode} />
+      <div className="min-h-screen bg-parchment text-sepia">
+        <Header />
         <AnimatePresence mode="wait">
           <Routes location={location} key={location.pathname}>
             <Route

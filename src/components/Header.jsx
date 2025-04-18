@@ -1,13 +1,12 @@
 import { useState, useContext, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Moon, Sun, Library } from "lucide-react";
+import { Library } from "lucide-react";
 import AuthContext from "../context/AuthContext";
 import { useBooks } from "../context/BookContext";
 import imageCompression from "browser-image-compression";
 import AvatarModal from './AvatarModal';
 
-
-function Header({ toggleTheme, isDarkMode }) {
+function Header() {
   const navigate = useNavigate();
   const { user, logout, uploadAvatar } = useContext(AuthContext);
   const { resetBooks } = useBooks();
@@ -86,12 +85,12 @@ function Header({ toggleTheme, isDarkMode }) {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg dark:from-purple-800 dark:to-indigo-800">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-parchment text-sepia border-b border-sepia">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center space-x-4">
             <Library className="w-8 h-8" />
-            <Link to="/" className="text-xl font-bold hover:underline">
+            <Link to="/" className="text-xl font-heading text-rust hover:text-teal transition">
               BiblioTracker
             </Link>
           </div>
@@ -99,17 +98,17 @@ function Header({ toggleTheme, isDarkMode }) {
             <ul className="flex justify-between items-center">
               <div className="flex space-x-4">
                 <li>
-                  <Link to="/books" className="hover:underline">
+                  <Link to="/books" className="text-sepia hover:text-rust transition">
                     Mes Livres
                   </Link>
                 </li>
                 <li>
-                  <Link to="/add-book" className="hover:underline">
+                  <Link to="/add-book" className="text-sepia hover:text-rust transition">
                     Ajouter un Livre
                   </Link>
                 </li>
                 <li>
-                  <Link to="/statistics" className="hover:underline">
+                  <Link to="/statistics" className="text-sepia hover:text-rust transition">
                     Statistiques
                   </Link>
                 </li>
@@ -121,12 +120,12 @@ function Header({ toggleTheme, isDarkMode }) {
                     <img
                       src={user?.avatar ? `${import.meta.env.VITE_API_URL}${user.avatar}` : "/default-avatar.png"}
                       alt="User Avatar"
-                      className="w-10 h-10 rounded-full cursor-pointer"
+                      className="w-10 h-10 rounded-full cursor-pointer border-2 border-sepia"
                       onClick={handleEditAvatar}
                     />
                     <button
                       onClick={handleLogout}
-                      className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                      className="px-4 py-2 bg-rust text-parchment rounded-lg shadow hover:bg-teal transition"
                     >
                       Déconnexion
                     </button>
@@ -134,18 +133,12 @@ function Header({ toggleTheme, isDarkMode }) {
                 ) : (
                   <Link
                     to="/login"
-                    className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                    className="px-4 py-2 bg-rust text-parchment rounded-lg shadow hover:bg-teal transition"
                   >
                     Connexion
                   </Link>
                 )}
               </div>
-              <button
-                onClick={toggleTheme}
-                className="p-2 ml-4 rounded-lg text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
-              >
-                {isDarkMode ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
-              </button>
             </ul>
           </nav>
         </div>

@@ -66,16 +66,16 @@ const Login = () => {
 
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-      <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-800">
-        <div className="w-full max-w-md bg-white dark:bg-gray-900 rounded-lg shadow-md p-6">
-          <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6 text-center">
+      <div className="flex items-center justify-center min-h-screen bg-parchment text-sepia">
+        <div className="w-full max-w-md bg-parchment text-sepia rounded-2xl shadow-lg p-6">
+          <h2 className="text-3xl font-heading text-rust mb-6 text-center">
             Connexion
           </h2>
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                className="block text-sm font-medium text-sepia"
               >
                 Email
               </label>
@@ -86,14 +86,14 @@ const Login = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 onFocus={() => setEmailAutoComplete("on")}
                 autoComplete={emailAutoComplete}
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-gray-300"
+                className="mt-1 block w-full px-4 py-2 border border-sepia rounded-md shadow-sm focus:ring-rust focus:border-rust bg-parchment text-sepia"
                 required
               />
             </div>
             <div className="mb-4 relative">
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                className="block text-sm font-medium text-sepia"
               >
                 Mot de passe
               </label>
@@ -105,7 +105,7 @@ const Login = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   onFocus={() => setPasswordAutoComplete("on")}
                   autoComplete={passwordAutoComplete}
-                  className="mt-1 block w-full pl-10 px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-gray-300"
+                  className="mt-1 block w-full px-4 py-2 border border-sepia rounded-md shadow-sm focus:ring-rust focus:border-rust bg-parchment text-sepia"
                   required
                 />
                 <div
@@ -118,7 +118,7 @@ const Login = () => {
             </div>
             <button
               type="submit"
-              className="w-full bg-indigo-500 text-white py-2 px-4 rounded-md hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              className="w-full px-4 py-2 bg-rust text-parchment rounded-lg shadow hover:bg-teal focus:outline-none focus:ring-2 focus:ring-rust transition"
             >
               Se connecter
             </button>
@@ -131,19 +131,19 @@ const Login = () => {
               className="w-full flex justify-center"
             />
           </div>
-          <p className="mt-4 text-sm text-center text-gray-600 dark:text-gray-400">
+          <p className="mt-4 text-sm text-center text-sepia">
             <button
               onClick={handleForgotPasswordClick}
-              className="text-indigo-500 hover:underline dark:text-indigo-400"
+              className="text-rust hover:text-teal underline transition"
             >
               Mot de passe oublié ?
             </button>
           </p>
-          <p className="mt-4 text-sm text-center text-gray-600 dark:text-gray-400">
+          <p className="mt-4 text-sm text-center text-sepia">
             Vous n'avez pas de compte ?{" "}
             <a
               href="/register"
-              className="text-indigo-500 hover:underline dark:text-indigo-400"
+              className="text-rust hover:text-teal underline transition"
             >
               S'inscrire
             </a>

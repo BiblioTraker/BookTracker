@@ -95,17 +95,19 @@ const Register = () => {
 
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-      <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-800">
-        <div className="w-full max-w-md bg-white dark:bg-gray-900 rounded-lg shadow-md p-6">
-          <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6 text-center">
+      <div className="flex items-center justify-center min-h-screen bg-parchment text-sepia">
+        <div className="w-full max-w-md bg-parchment text-sepia rounded-2xl shadow-lg p-6">
+          <h2 className="text-3xl font-heading text-rust mb-6 text-center">
             Inscription
           </h2>
 
           {/* Affichage des messages */}
           {message && (
             <div
-              className={`mb-4 p-3 rounded ${
-                messageType === "success" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+              className={`mb-4 p-3 rounded-lg ${
+                messageType === "success"
+                  ? "bg-teal text-parchment"
+                  : "bg-rust text-parchment"
               }`}
             >
               {message}
@@ -116,7 +118,7 @@ const Register = () => {
             <div className="mb-4">
               <label
                 htmlFor="name"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                className="block text-sm font-medium text-sepia"
               >
                 Prénom
               </label>
@@ -125,14 +127,14 @@ const Register = () => {
                 id="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-gray-300"
+                className="mt-1 block w-full px-4 py-2 border border-sepia rounded-md shadow-sm focus:ring-rust focus:border-rust bg-parchment text-sepia"
                 required
               />
             </div>
             <div className="mb-4">
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                className="block text-sm font-medium text-sepia"
               >
                 Email
               </label>
@@ -142,14 +144,14 @@ const Register = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 autoComplete="off"
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-gray-300"
+                className="mt-1 block w-full px-4 py-2 border border-sepia rounded-md shadow-sm focus:ring-rust focus:border-rust bg-parchment text-sepia"
                 required
               />
             </div>
             <div className="mb-4">
               <label
                 htmlFor="confirmEmail"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                className="block text-sm font-medium text-sepia"
               >
                 Confirmer Email
               </label>
@@ -159,14 +161,14 @@ const Register = () => {
                 value={confirmEmail}
                 onChange={(e) => setConfirmEmail(e.target.value)}
                 autoComplete="off"
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-gray-300"
+                className="mt-1 block w-full px-4 py-2 border border-sepia rounded-md shadow-sm focus:ring-rust focus:border-rust bg-parchment text-sepia"
                 required
               />
             </div>
             <div className="mb-4 relative">
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                className="block text-sm font-medium text-sepia"
               >
                 Mot de passe
               </label>
@@ -177,7 +179,7 @@ const Register = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   autoComplete="new-password"
-                  className="mt-1 block w-full pl-10 px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-gray-300"
+                  className="mt-1 block w-full px-4 py-2 border border-sepia rounded-md shadow-sm focus:ring-rust focus:border-rust bg-parchment text-sepia"
                   required
                 />
                 <div
@@ -191,7 +193,7 @@ const Register = () => {
             <div className="mb-6 relative">
               <label
                 htmlFor="confirmPassword"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                className="block text-sm font-medium text-sepia"
               >
                 Confirmer Mot de passe
               </label>
@@ -202,7 +204,7 @@ const Register = () => {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   autoComplete="new-password"
-                  className="mt-1 block w-full pl-10 px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-gray-300"
+                  className="mt-1 block w-full px-4 py-2 border border-sepia rounded-md shadow-sm focus:ring-rust focus:border-rust bg-parchment text-sepia"
                   required
                 />
                 <div
@@ -215,7 +217,7 @@ const Register = () => {
             </div>
             <button
               type="submit"
-              className="w-full bg-indigo-500 text-white py-2 px-4 rounded-md hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              className="w-full px-4 py-2 bg-rust text-parchment rounded-lg shadow hover:bg-teal focus:outline-none focus:ring-2 focus:ring-rust transition"
             >
               S'inscrire
             </button>
@@ -228,11 +230,11 @@ const Register = () => {
               className="w-full flex justify-center"
             />
           </div>
-          <p className="mt-4 text-sm text-center text-gray-600 dark:text-gray-400">
+          <p className="mt-4 text-sm text-center text-sepia">
             Vous avez déjà un compte ?{" "}
             <a
               href="/login"
-              className="text-indigo-500 hover:underline dark:text-indigo-400"
+              className="text-rust hover:text-teal underline transition"
             >
               Se connecter
             </a>

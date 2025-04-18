@@ -1,10 +1,28 @@
+import typography from '@tailwindcss/typography';
+
 /** @type {import('tailwindcss').Config} */
 export default {
-  darkMode: 'class', // Active le mode sombre via une classe
-  content: ['.index.html', './src/**/*.{js,jsx,ts,tsx}'],
+  content: [
+    './public/index.html',
+    './src/**/*.{js,jsx,ts,tsx}',
+  ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        // Illustratif & Vintage (light mode)
+        parchment:   '#F6E8DC',
+        sepia:       '#A17F59',
+        rust:        '#B35949',
+        teal:        '#6B9E9F',
+      },
+      fontFamily: {
+        // Vintage
+        body:    ['Merriweather', 'serif'],
+        heading: ['Parisienne', 'cursive'],
+      },
+    },
   },
-  plugins: [],
-}
-
+  plugins: [
+    typography,
+  ],
+};

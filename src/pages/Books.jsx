@@ -1,4 +1,3 @@
-// src/pages/Books.jsx
 import { useBooks } from "../context/BookContext";
 import { useState, useRef } from "react";
 import BookList from "../components/BookList";
@@ -74,25 +73,25 @@ const Books = () => {
   };
 
   return (
-    <div>
+    <div className="min-h-screen p-6 bg-parchment text-sepia">
       <div className="mt-8">
         <Statistics books={books} onFilter={handleStatisticFilter} />
       </div>
-      <div className="p-4" ref={bookListRef} id="book-list">
+      <div className="mt-8 p-6 bg-parchment rounded-2xl shadow-lg" ref={bookListRef} id="book-list">
         <div className="mb-4 flex justify-center">
           <input
             type="text"
             placeholder="Rechercher un de vos livres"
             value={searchTerm}
             onChange={handleSearchChange}
-            className="border border-gray-300 rounded p-2 w-1/3 dark:text-black"
+            className="border border-sepia p-2 rounded-md w-1/3 bg-parchment text-sepia placeholder-sepia"
           />
         </div>
-        <div className="flex justify-start items-center mb-4 dark:text-black">
+        <div className="flex justify-start items-center mb-4">
           <select
             value={filterStatus}
             onChange={handleFilterChange}
-            className="border border-gray-300 rounded p-2 mr-8"
+            className="border border-sepia p-2 rounded-md mr-8 bg-parchment text-sepia"
           >
             <option value="Tous">Tous</option>
             <option value="Lu">Lu</option>
@@ -104,7 +103,7 @@ const Books = () => {
           <select
             value={sortOption}
             onChange={handleSortChange}
-            className="border border-gray-300 rounded p-2"
+            className="border border-sepia p-2 rounded-md bg-parchment text-sepia"
           >
             <option value="titre">Titre</option>
             <option value="auteur">Auteur</option>

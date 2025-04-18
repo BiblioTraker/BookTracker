@@ -52,8 +52,8 @@ function BookList({ books, deleteBook, onUpdateStatus, onUpdateRating, onAddComm
   };
 
   return (
-    <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">Ma Liste de Livres</h2>
+    <div className="min-h-screen p-6 bg-parchment text-sepia">
+      <h2 className="text-3xl font-heading text-rust mb-6">Ma Liste de Livres</h2>
       {books && books.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <AnimatePresence>
@@ -64,11 +64,11 @@ function BookList({ books, deleteBook, onUpdateStatus, onUpdateRating, onAddComm
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 20 }}
                 transition={{ duration: 0.3 }}
-                className="relative bg-white shadow-md rounded-md p-4 flex flex-col items-center dark:bg-gray-800"
+                className="relative bg-parchment text-sepia rounded-2xl shadow-lg p-6 flex flex-col items-center"
               >
                 <button
                   onClick={() => onUpdateStatus(book._id || book.id)}
-                  className="absolute top-2 left-2 p-2 rounded-full bg-gray-200 dark:bg-gray-700"
+                  className="absolute top-2 left-2 p-2 rounded-full bg-sepia transition"
                 >
                   {getStatusIcon(book.status)}
                 </button>
@@ -76,10 +76,10 @@ function BookList({ books, deleteBook, onUpdateStatus, onUpdateRating, onAddComm
                     <button
                       onClick={() => onToggleForSale(book._id || book.id)}
                       className={`absolute top-12 left-2 p-2 rounded-full ${
-                        book.isForSale ? "bg-green-500" : "bg-gray-200"
-                      } dark:text-green-700`}
+                        book.isForSale ? "bg-rust" : "bg-sepia"
+                      }`}
                     >
-                      <FaDollarSign className={book.isForSale ? "text-white" : "text-gray-500"} />
+                      <FaDollarSign className="text-parchment" />
                     </button>
                   )}
                 <img
@@ -87,18 +87,18 @@ function BookList({ books, deleteBook, onUpdateStatus, onUpdateRating, onAddComm
                   alt={book.title}
                   className="w-32 h-48 object-cover mb-4"
                 />
-                <h3 className="text-lg font-semibold dark:text-white">{book.title}</h3>
-                <p className="text-gray-500 dark:text-white">Auteur : {book.author}</p>
+                <h3 className="text-lg font-heading text-rust">{book.title}</h3>
+                <p className="text-sepia">Auteur : {book.author}</p>
                 <div className="flex space-x-2 mt-4">
                 <button
                   onClick={() => deleteBook(book._id || book.id)}
-                  className="absolute top-2 right-2 p-2 rounded-full bg-red-500 text-white"
+                  className="absolute top-2 right-2 p-2 rounded-full bg-rust text-parchment transition"
                 >
                   <FaTrash />
                 </button>
                 </div>
                 <div className="mt-4">
-                  <label className="block text-gray-700 dark:text-white">Note :</label>
+                  <label className="block text-sepia">Note :</label>
                   <ReactStars
                     count={5}
                     value={book.rating || 0}
@@ -108,21 +108,21 @@ function BookList({ books, deleteBook, onUpdateStatus, onUpdateRating, onAddComm
                   />
                 </div>
                 <div className="mt-4 w-full">
-                <h4 className="text-md font-semibold dark:text-white">Commentaires :</h4>
+                <h4 className="text-md font-semibold">Commentaires :</h4>
                 <ul className="list-disc list-inside">
                   {book.comments.map((comment) => (
-                    <li key={comment._id} className="text-gray-500 dark:text-white flex justify-between items-center">
+                    <li key={comment._id} className="text-gray-500 flex justify-between items-center">
                       {editingCommentId === comment._id ? (
                         <>
                           <input
                             type="text"
                             value={editCommentTexts[comment._id] || ""}
                             onChange={(e) => handleEditCommentChange(comment._id, e.target.value)}
-                            className="border border-gray-300 rounded p-2 w-full dark:text-black"
+                            className="border border-sepia p-2 rounded-md w-full bg-parchment text-sepia"
                           />
                           <button
                             onClick={() => handleUpdateComment(book._id || book.id, comment._id)}
-                            className="bg-blue-500 text-white px-2 py-1 rounded ml-2"
+                            className="bg-teal text-parchment px-2 py-1 rounded ml-2 transition"
                           >
                             <FaSave />
                           </button>
@@ -133,13 +133,13 @@ function BookList({ books, deleteBook, onUpdateStatus, onUpdateRating, onAddComm
                           <div className="flex items-center">
                             <button
                               onClick={() => handleEditComment(book._id || book.id, comment._id, comment.text)}
-                              className="bg-yellow-500 text-white px-2 py-1 rounded ml-2"
+                              className="bg-rust text-parchment px-2 py-1 rounded ml-2 transition"
                             >
                               <FaEdit />
                             </button>
                             <button
                               onClick={() => onDeleteComment(book._id || book.id, comment._id)}
-                              className="bg-red-500 text-white px-2 py-1 rounded ml-2"
+                              className="bg-rust text-parchment px-2 py-1 rounded ml-2 transition"
                             >
                               <FaTrash />
                             </button>
@@ -154,11 +154,11 @@ function BookList({ books, deleteBook, onUpdateStatus, onUpdateRating, onAddComm
                   value={newCommentTexts[book._id || book.id] || ""}
                   onChange={(e) => handleNewCommentChange(book._id || book.id, e.target.value)}
                   placeholder="Ajouter un commentaire"
-                  className="border border-gray-300 rounded p-2 w-full dark:text-black mt-2"
+                  className="border border-sepia p-2 rounded-md w-full bg-parchment text-sepia mt-2"
                 />
                 <button
                   onClick={() => handleAddComment(book._id || book.id)}
-                  className="bg-blue-500 text-white px-4 py-2 rounded mt-2"
+                  className="mt-2 px-6 py-3 bg-rust text-parchment rounded-lg shadow hover:bg-teal transition"
                 >
                   Ajouter
                 </button>
@@ -168,7 +168,7 @@ function BookList({ books, deleteBook, onUpdateStatus, onUpdateRating, onAddComm
           </AnimatePresence>
         </div>
       ) : (
-        <p className="text-gray-500">Aucun livre trouvé.</p>
+        <p className="text-sepia">Aucun livre trouvé.</p>
       )}
     </div>
   );
