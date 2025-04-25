@@ -1,22 +1,59 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion"; // Import Framer Motion
 import { useBooks } from "../context/BookContext";
-import { AiOutlineClose } from 'react-icons/ai';
+import { useForm, FormProvider } from 'react-hook-form';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import AddBookTabs from '../components/addbook/AddBookTabs';
+import BookSearch from '../components/addbook/BookSearch';
+import ManualBookForm from '../components/addbook/ManualBookForm';
+
+const manualSchema = yup.object({
+  title: yup.string().required('Le titre est obligatoire'),
+  author: yup.string().required("L'auteur est obligatoire"),
+  genre: yup.string(),
+  cover: yup.string().url('URL invalide').nullable(),
+});
 
 const AddBook = () => {
-  const { books, setBooks, addBook } = useBooks(); // Accéder au contexte global pour les livres
+  const { books, addBook } = useBooks(); // Accéder au contexte global pour les livres
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false); // État pour le chargement
   const [successMessage, setSuccessMessage] = useState(""); // État pour le message de succès
-  const [manualBook, setManualBook] = useState({
-    title: "",
-    author: "",
-    genre: "",
-    cover: "",
-    status: "À lire",
-  });
+  const [tab, setTab] = useState('search');
   const API_KEY = import.meta.env.VITE_GOOGLE_BOOKS_API_KEY; // Récupère la clé depuis .env
+
+  const methods = useForm({
+    resolver: yupResolver(manualSchema),
+    defaultValues: { title: '', author: '', genre: '', cover: '' },
+    mode: 'onTouched',
+  });
+  const { register, handleSubmit, formState: { errors }, setValue } = methods;
+
+  const [coverPreview, setCoverPreview] = useState('');
+
+  const handleCoverFile = (file) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      setCoverPreview(reader.result);
+      setValue('cover', reader.result);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleDropCover = (e) => {
+    e.preventDefault();
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleCoverFile(e.dataTransfer.files[0]);
+    }
+  };
+
+  const handleSelectCover = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      handleCoverFile(e.target.files[0]);
+    }
+  };
 
   useEffect(() => {
     // Débouncing pour la recherche
@@ -65,33 +102,11 @@ const AddBook = () => {
     setTimeout(() => setSuccessMessage(""), 3000); // Effacer le message après 3 secondes
   };
 
-  const handleAddManualBook = async (e) => {
-    e.preventDefault();
-    if (!manualBook.title.trim() || !manualBook.author.trim()) {
-      alert("Le titre et l'auteur sont obligatoires.");
-      return;
-    }
-
-    const newBook = {
-      title: manualBook.title,
-      author: manualBook.author,
-      genre: manualBook.genre || "Inconnu",
-      cover: manualBook.cover || "",
-      status: "À lire",
-    };
-
+  const onSubmitManual = async (data) => {
+    const newBook = { ...data, status: 'À lire' };
     try {
       await addBook(newBook);
-
-      setSuccessMessage(`Le livre "${newBook.title}" a été ajouté avec succès.`);
-      setManualBook({
-        title: "",
-        author: "",
-        genre: "",
-        cover: "",
-        status: "À lire",
-      });
-
+      setSuccessMessage(`Le livre "${data.title}" a été ajouté avec succès.`);
       setTimeout(() => setSuccessMessage(""), 3000);
     } catch (error) {
       console.error("Erreur lors de l'ajout manuel du livre :", error);
@@ -106,118 +121,42 @@ const AddBook = () => {
 
   return (
     <div className="min-h-screen p-6 bg-parchment text-sepia">
-    <div className="p-6 mt-8 bg-parchment text-sepia rounded-2xl shadow-lg mx-4 sm:mx-8 md:mx-16 lg:mx-32">
-      <h2 className="text-3xl font-heading text-rust mb-6">Ajouter un Livre</h2>
-      {/* Recherche de livres */}
-      <div className="mb-4 flex items-center">
-        <input
-          type="text"
-          id="searchTerm"
-          name="searchTerm"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Rechercher un livre"
-          className="border border-sepia p-2 rounded-md w-1/2 bg-parchment text-sepia placeholder-sepia"
-        />
-        {searchTerm && (
-          <AiOutlineClose
-          onClick={clearSearch}
-          className="ml-2 text-rust cursor-pointer"
-          size={24}
-        />
+      <div className="p-6 mt-8 bg-parchment text-sepia rounded-2xl shadow-lg mx-4 sm:mx-8 md:mx-16 lg:mx-32">
+        <h2 className="text-3xl font-heading text-rust mb-6">Ajouter un Livre</h2>
+        <AddBookTabs tab={tab} setTab={setTab} />
+        {successMessage && (
+          <motion.div
+            role="status"
+            aria-live="polite"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-teal text-parchment p-3 rounded-lg shadow-lg z-50 transition"
+          >
+            {successMessage}
+          </motion.div>
+        )}
+        {tab === 'search' && (
+          <BookSearch
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            clearSearch={clearSearch}
+            isLoading={isLoading}
+            searchResults={searchResults}
+            handleAddBook={handleAddBook}
+          />
+        )}
+        {tab === 'manual' && (
+          <ManualBookForm
+            methods={methods}
+            onSubmitManual={onSubmitManual}
+            errors={errors}
+            coverPreview={coverPreview}
+            handleDropCover={handleDropCover}
+            handleSelectCover={handleSelectCover}
+          />
         )}
       </div>
-      {isLoading && <p className="text-sepia">Recherche en cours...</p>}
-      {successMessage && (
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-teal text-parchment p-3 rounded-lg shadow-lg z-50 transition"
-        >
-          {successMessage}
-        </motion.div>
-      )}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
-      >
-        {searchResults.map((book) => (
-          <motion.div
-            key={book.id}
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.3 }}
-            className="bg-parchment text-sepia rounded-2xl shadow-lg p-6 flex flex-col items-center"
-          >
-            <img
-              src={book.volumeInfo.imageLinks?.thumbnail || ""}
-              alt={book.volumeInfo.title}
-              className="w-32 h-48 object-cover mb-4"
-            />
-            <h3 className="text-lg font-heading text-rust mb-2">{book.volumeInfo.title}</h3>
-            <p className="text-sepia mb-4">
-              Auteur : {book.volumeInfo.authors?.join(", ") || "Auteur inconnu"}
-            </p>
-            <button
-              onClick={() => handleAddBook(book)}
-              className="mt-2 px-6 py-3 bg-rust text-parchment rounded-lg shadow hover:bg-teal transition"
-            >
-              Ajouter
-            </button>
-          </motion.div>
-        ))}
-      </motion.div>
-      <div className="mt-8">
-        <h3 className="text-2xl font-heading text-rust mb-6">Ajouter un Livre Manuellement</h3>
-        <form onSubmit={handleAddManualBook} className="space-y-4">
-          <input
-            type="text"
-            id="title"
-            name="title"
-            placeholder="Titre"
-            value={manualBook.title}
-            onChange={(e) => setManualBook({ ...manualBook, title: e.target.value })}
-            className="border border-sepia p-2 rounded-md w-full bg-parchment text-sepia placeholder-sepia"
-          />
-          <input
-            type="text"
-            id="author"
-            name="author"
-            placeholder="Auteur"
-            value={manualBook.author}
-            onChange={(e) => setManualBook({ ...manualBook, author: e.target.value })}
-            className="border border-sepia p-2 rounded-md w-full bg-parchment text-sepia placeholder-sepia"
-          />
-          <input
-            type="text"
-            id="genre"
-            name="genre"
-            placeholder="Genre"
-            value={manualBook.genre}
-            onChange={(e) => setManualBook({ ...manualBook, genre: e.target.value })}
-            className="border border-sepia p-2 rounded-md w-full bg-parchment text-sepia placeholder-sepia"
-          />
-          <input
-            type="text"
-            id="cover"
-            name="cover"
-            placeholder="URL de la couverture (facultatif)"
-            value={manualBook.cover}
-            onChange={(e) => setManualBook({ ...manualBook, cover: e.target.value })}
-            className="border border-sepia p-2 rounded-md w-full bg-parchment text-sepia placeholder-sepia"
-          />
-          <button
-            type="submit"
-            className="px-6 py-3 bg-rust text-parchment rounded-lg shadow hover:bg-teal transition"
-          >
-            Ajouter le Livre
-          </button>
-        </form>
-      </div>
-    </div>
     </div>
   );
 };

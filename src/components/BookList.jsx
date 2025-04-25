@@ -1,25 +1,15 @@
+import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import PropTypes from "prop-types";
 import ReactStars from "react-rating-stars-component";
-import { FaBook, FaBookOpen, FaCheck, FaTrash, FaEdit, FaSave, FaShoppingCart, FaDollarSign } from "react-icons/fa";
-import { useState } from "react";
+import { FaTrash, FaEdit, FaSave, FaShareAlt, FaTwitter, FaFacebook, FaInstagram } from "react-icons/fa";
+import { toJpeg } from "html-to-image";
+import StatusToggle from './StatusToggle';
+import SaleToggle from './SaleToggle';
 
 function BookList({ books, deleteBook, onUpdateStatus, onUpdateRating, onAddComment, onDeleteComment, onUpdateComment, onToggleForSale }) {
 
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case "À lire":
-        return <FaBook className="text-yellow-500" />;
-      case "En cours":
-        return <FaBookOpen className="text-blue-500" />;
-      case "Lu":
-        return <FaCheck className="text-green-500" />;
-      case "À acheter":
-        return <FaShoppingCart className="text-red-500" />;
-      default:
-        return null;
-    }
-  };
+  const cardRefs = useRef({});
 
   const [newCommentTexts, setNewCommentTexts] = useState({});
   const [editCommentTexts, setEditCommentTexts] = useState({});
@@ -59,6 +49,7 @@ function BookList({ books, deleteBook, onUpdateStatus, onUpdateRating, onAddComm
           <AnimatePresence>
             {books.map((book) => (
               <motion.div
+                ref={el => { cardRefs.current[book._id || book.id] = el; }}
                 key={book._id || book.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -66,37 +57,111 @@ function BookList({ books, deleteBook, onUpdateStatus, onUpdateRating, onAddComm
                 transition={{ duration: 0.3 }}
                 className="relative bg-parchment text-sepia rounded-2xl shadow-lg p-6 flex flex-col items-center"
               >
-                <button
+                <div className="absolute top-2 right-2 flex flex-col space-y-2">
+                  <button
+                    onClick={() => deleteBook(book._id || book.id)}
+                    className="p-2 rounded-full bg-rust text-parchment transition hover:bg-teal"
+                    title="Supprimer ce livre"
+                  >
+                    <FaTrash />
+                  </button>
+                  <button
+                    onClick={async () => {
+                      console.log('Share button clicked for book:', book.title);
+                      const id = book._id || book.id;
+                      const node = cardRefs.current[id];
+                      if (!node) {
+                        console.error('Share failed: no DOM node found for', book.title);
+                        return;
+                      }
+                      try {
+                        const dataUrl = await toJpeg(node, { quality: 0.95 });
+                        const blob = await (await fetch(dataUrl)).blob();
+                        const file = new File([blob], `${book.title}.jpg`, { type: 'image/jpeg' });
+                        if (navigator.share) {
+                          await navigator.share({ files: [file], title: book.title });
+                        } else {
+                          const link = document.createElement('a');
+                          link.href = dataUrl;
+                          link.download = `${book.title}.jpg`;
+                          link.click();
+                        }
+                      } catch (error) {
+                        console.error('Error sharing card:', error);
+                      }
+                    }}
+                    className="p-2 rounded-full bg-sepia text-parchment transition hover:bg-rust"
+                    title="Partager cette carte"
+                  >
+                    <FaShareAlt />
+                  </button>
+                  <button
+                    onClick={() => {
+                      const url = `${window.location.origin}/books/${book._id || book.id}`;
+                      const text = `Découvrez "${book.title}" de ${book.author}`;
+                      window.open(
+                        `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`,
+                        '_blank'
+                      );
+                    }}
+                    className="p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition"
+                    title="Partager sur X"
+                  >
+                    <FaTwitter />
+                  </button>
+                  <button
+                    onClick={() => {
+                      const url = `${window.location.origin}/books/${book._id || book.id}`;
+                      window.open(
+                        `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
+                        '_blank'
+                      );
+                    }}
+                    className="p-2 rounded-full bg-blue-700 text-white hover:bg-blue-800 transition"
+                    title="Partager sur Facebook"
+                  >
+                    <FaFacebook />
+                  </button>
+                  <button
+                    onClick={async () => {
+                      const id = book._id || book.id;
+                      const node = cardRefs.current[id];
+                      if (node) {
+                        try {
+                          const dataUrl = await toJpeg(node, { quality: 0.95 });
+                          const link = document.createElement('a');
+                          link.href = dataUrl;
+                          link.download = `${book.title}.jpg`;
+                          link.click();
+                          alert('Image téléchargée. Vous pouvez maintenant la partager sur Instagram.');
+                        } catch (error) {
+                          console.error('Error preparing Instagram share:', error);
+                        }
+                      }
+                    }}
+                    className="p-2 rounded-full bg-pink-500 text-white hover:bg-pink-600 transition"
+                    title="Préparer pour Instagram"
+                  >
+                    <FaInstagram />
+                  </button>
+                </div>
+                <StatusToggle
+                  status={book.status}
                   onClick={() => onUpdateStatus(book._id || book.id)}
-                  className="absolute top-2 left-2 p-2 rounded-full bg-sepia transition"
-                >
-                  {getStatusIcon(book.status)}
-                </button>
+                />
                 {(book.status === "À lire" || book.status === "En cours" || book.status === "Lu") && (
-                    <button
+                    <SaleToggle
+                      isForSale={book.isForSale}
                       onClick={() => onToggleForSale(book._id || book.id)}
-                      className={`absolute top-12 left-2 p-2 rounded-full ${
-                        book.isForSale ? "bg-rust" : "bg-sepia"
-                      }`}
-                    >
-                      <FaDollarSign className="text-parchment" />
-                    </button>
+                    />
                   )}
                 <img
-                  src={book.cover}
+                  src={`https://api.allorigins.win/raw?url=${encodeURIComponent(book.cover)}`}
                   alt={book.title}
                   className="w-32 h-48 object-cover mb-4"
                 />
                 <h3 className="text-lg font-heading text-rust">{book.title}</h3>
                 <p className="text-sepia">Auteur : {book.author}</p>
-                <div className="flex space-x-2 mt-4">
-                <button
-                  onClick={() => deleteBook(book._id || book.id)}
-                  className="absolute top-2 right-2 p-2 rounded-full bg-rust text-parchment transition"
-                >
-                  <FaTrash />
-                </button>
-                </div>
                 <div className="mt-4">
                   <label className="block text-sepia">Note :</label>
                   <ReactStars

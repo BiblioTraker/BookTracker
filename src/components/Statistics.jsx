@@ -1,5 +1,5 @@
 import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
-import { FaRedo } from "react-icons/fa";
+import { motion } from 'framer-motion';
 
 function Statistics({ books, onFilter }) {
   const getStatusCounts = () => {
@@ -22,22 +22,12 @@ function Statistics({ books, onFilter }) {
     onFilter(data.name);
   };
 
-  const handleReset = () => {
-    onFilter("Tous");
-  };
-
   return (
     <div className="flex justify-center items-center min-h-screen bg-parchment text-sepia">
       <div className="relative p-6 bg-parchment text-sepia rounded-2xl shadow-lg w-full max-w-4xl">
-        <button
-          onClick={handleReset}
-          className="absolute top-4 right-4 p-2 rounded-full bg-parchment hover:bg-teal transition"
-          title="Réinitialiser les filtres"
-        >
-          <FaRedo className="text-sepia" />
-        </button>
         <h2 className="text-3xl font-heading text-rust mb-6 text-center">Mes statistiques</h2>
         <div className="flex flex-col lg:flex-row items-center justify-center gap-8">
+          <motion.div initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6 }}>
           <PieChart width={600} height={450}>
             <Pie
               data={data}
@@ -57,6 +47,7 @@ function Statistics({ books, onFilter }) {
             <Tooltip />
             <Legend />
           </PieChart>
+          </motion.div>
           <div className="mt-4 text-center flex flex-col justify-center space-y-1 text-sepia font-body">
             <p><strong>Total :</strong> {books.length} livres</p>
             {data.map((item) => (
