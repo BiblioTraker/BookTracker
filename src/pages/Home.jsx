@@ -16,10 +16,10 @@ const Home = () => {
           Suivez vos lectures, visualisez vos progrès, et explorez vos livres préférés.
         </p>
       </header>
-      <RecommendationSection />
       {books.length > 0 && (
         <section className="mb-8">
-          <h2 className="text-2xl font-heading text-rust mb-4">Récemment ajoutés</h2>
+          <RecommendationSection />
+          <h2 className="text-2xl font-heading text-rust mb-4 text-center">Récemment ajoutés</h2>
           <Swiper slidesPerView={4.5} spaceBetween={8} className="mb-4">
             {books.slice(-10).reverse().map((book) => (
               <SwiperSlide key={book._id || book.id}>
