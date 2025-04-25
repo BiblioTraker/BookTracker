@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
+import { useToast } from './ToastContext';
 
 const BooksContext = createContext();
 
@@ -8,6 +9,7 @@ export const useBooks = () => useContext(BooksContext);
 export const BooksProvider = ({ children }) => {
   const [books, setBooks] = useState([]);
   const API_URL = import.meta.env.VITE_API_URL;
+  const { addToast } = useToast();
 
   const fetchBooks = () => {
     const token = localStorage.getItem("user")
@@ -51,6 +53,7 @@ export const BooksProvider = ({ children }) => {
       })
       .catch((error) => {
         console.error("Erreur lors de l'ajout du livre :", error);
+        addToast({ message: "Échec de l’ajout du livre", type: 'error' });
       });
   };
 
@@ -66,9 +69,11 @@ export const BooksProvider = ({ children }) => {
       .delete(`${API_URL}/api/books/${id}`, config)
       .then(() => {
         setBooks((prevBooks) => prevBooks.filter((book) => book._id !== id));
+        addToast({ message: 'Livre supprimé !', type: 'success' });
       })
       .catch((error) => {
         console.error("Erreur lors de la suppression du livre :", error);
+        addToast({ message: "Échec de la suppression du livre", type: 'error' });
       });
   };
 
@@ -89,9 +94,11 @@ export const BooksProvider = ({ children }) => {
             book._id === id ? { ...book, status: response.data.status } : book
           )
         );
+        addToast({ message: `Le livre est "${response.data.status}"`, type: 'success' });
       })
       .catch((error) => {
         console.error("Erreur lors de la mise à jour du statut :", error);
+        addToast({ message: "Échec de la mise à jour du statut", type: 'error' });
       });
   };
 
@@ -117,9 +124,11 @@ export const BooksProvider = ({ children }) => {
             book._id === id ? { ...book, rating: response.data.rating } : book
           )
         );
+        addToast({ message: 'Note mise à jour !', type: 'success' });
       })
       .catch((error) => {
         console.error("Erreur lors de la mise à jour de la note :", error);
+        addToast({ message: "Échec de la mise à jour de la note", type: 'error' });
       });
   };
 
@@ -141,9 +150,11 @@ export const BooksProvider = ({ children }) => {
               : book
           )
         );
+        addToast({ message: 'Commentaire ajouté !', type: 'success' });
       })
       .catch((error) => {
         console.error("Erreur lors de l'ajout du commentaire :", error);
+        addToast({ message: "Échec de l’ajout du commentaire", type: 'error' });
       });
   };
 
@@ -165,9 +176,11 @@ export const BooksProvider = ({ children }) => {
               : book
           )
         );
+        addToast({ message: 'Commentaire supprimé !', type: 'success' });
       })
       .catch((error) => {
         console.error("Erreur lors de la suppression du commentaire :", error);
+        addToast({ message: "Échec de la suppression du commentaire", type: 'error' });
       });
   };
 
@@ -194,9 +207,11 @@ export const BooksProvider = ({ children }) => {
               : book
           )
         );
+        addToast({ message: 'Commentaire mis à jour !', type: 'success' });
       })
       .catch((error) => {
         console.error("Erreur lors de la mise à jour du commentaire :", error);
+        addToast({ message: "Échec de la mise à jour du commentaire", type: 'error' });
       });
   };
 
@@ -220,12 +235,14 @@ export const BooksProvider = ({ children }) => {
               : book
           )
         );
+        addToast({ message: "Statut de vente mis à jour !", type: 'success' });
       })
       .catch((error) => {
         console.error(
           "Erreur lors de la mise à jour du statut 'À vendre' :",
           error
         );
+        addToast({ message: "Échec de la mise à jour du statut de vente", type: 'error' });
       });
   };
 

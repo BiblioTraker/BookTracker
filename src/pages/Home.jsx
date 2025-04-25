@@ -1,5 +1,9 @@
 import { useBooks } from "../context/BookContext";
 import { Link } from "react-router-dom";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import BookCard from '../components/BookCard';
+import RecommendationSection from "../components/RecommendationSection";
 
 const Home = () => {
   const { books } = useBooks();
@@ -12,6 +16,23 @@ const Home = () => {
           Suivez vos lectures, visualisez vos progrès, et explorez vos livres préférés.
         </p>
       </header>
+      <RecommendationSection />
+      {books.length > 0 && (
+        <section className="mb-8">
+          <h2 className="text-2xl font-heading text-rust mb-4">Récemment ajoutés</h2>
+          <Swiper slidesPerView={4.5} spaceBetween={8} className="mb-4">
+            {books.slice(-10).reverse().map((book) => (
+              <SwiperSlide key={book._id || book.id}>
+                <BookCard
+                  title={book.title}
+                  author={book.author}
+                  cover={book.cover || book.imageUrl}
+                />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </section>
+      )}
       {books.length === 0 && (
         <div className="text-center mt-8">
           <p className="text-xl font-heading text-rust mb-4">Ajoutez votre premier livre</p>

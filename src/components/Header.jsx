@@ -90,13 +90,16 @@ function Header() {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center space-x-4">
             <Library className="w-8 h-8" />
-            <Link to="/" className="text-xl font-heading text-rust hover:text-teal transition">
-              BiblioTracker
-            </Link>
+            <span className="text-xl font-heading text-rust">BiblioTracker</span>
           </div>
           <nav className="p-4">
             <ul className="flex items-center justify-between">
               <div className="flex space-x-4">
+                <li>
+                  <Link to="/" className="text-sepia hover:text-rust transition">
+                    Accueil
+                  </Link>
+                </li>
                 <li>
                   <Link to="/books" className="text-sepia hover:text-rust transition">
                     Mes Livres

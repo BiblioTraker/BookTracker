@@ -1,4 +1,5 @@
 import { Routes, Route, useLocation } from 'react-router-dom';
+import { ToastProvider } from './context/ToastContext';
 import Home from './pages/Home';
 import Books from './pages/Books';
 import AddBook from './pages/AddBook';
@@ -18,8 +19,9 @@ const App = () => {
   const location = useLocation();
 
   return (
-    <BooksProvider>
-    <AuthProvider>
+    <ToastProvider>
+      <BooksProvider>
+      <AuthProvider>
       <div className="min-h-screen bg-parchment text-sepia">
         <Header />
         <AnimatePresence mode="wait">
@@ -103,6 +105,7 @@ const App = () => {
         </div>
       </AuthProvider>
     </BooksProvider>
+    </ToastProvider>
   );
 };
 

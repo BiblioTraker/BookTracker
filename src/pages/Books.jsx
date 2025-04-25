@@ -1,30 +1,18 @@
 import { useBooks } from "../context/BookContext";
 import { useState, useRef } from "react";
 import BookList from "../components/BookList";
-import Statistics from '../components/Statistics';
+import SkeletonCard from '../components/ui/SkeletonCard';
+import FilterButtons from '../components/ui/FilterButtons';
 
 const Books = () => {
-  const { books, deleteBook, updateBookStatus, updateBookRating, addComment, deleteComment, updateComment, toggleForSale } = useBooks();
+  const { books, deleteBook, updateBookStatus, updateBookRating, addComment, deleteComment, updateComment, toggleForSale, isLoading } = useBooks();
   const [filterStatus, setFilterStatus] = useState("Tous");
   const [sortOption, setSortOption] = useState("titre");
   const [searchTerm, setSearchTerm] = useState("");
   const bookListRef = useRef(null); // Référence pour la liste de livres
 
-  const handleFilterChange = (e) => {
-    setFilterStatus(e.target.value);
-  };
-
-  const handleSortChange = (e) => {
-    setSortOption(e.target.value);
-  };
-
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
-  };
-
-  const handleStatisticFilter = (status) => {
-    setFilterStatus(status);
-    bookListRef.current.scrollIntoView({ behavior: "smooth" }); // Faire défiler vers la liste de livres
   };
 
   const filteredBooks = books.filter((book) => {
@@ -35,8 +23,9 @@ const Books = () => {
   });
 
   const sortedBooks = [...filteredBooks].sort((a, b) => {
-    if (sortOption === "titre") return a.title.localeCompare(b.title);
-    if (sortOption === "auteur") return a.author.localeCompare(b.author);
+    const key = sortOption.toLowerCase();
+    if (key === "titre") return a.title.localeCompare(b.title);
+    if (key === "auteur") return a.author.localeCompare(b.author);
     return 0;
   });
 
@@ -74,9 +63,6 @@ const Books = () => {
 
   return (
     <div className="min-h-screen p-6 bg-parchment text-sepia">
-      <div className="mt-8">
-        <Statistics books={books} onFilter={handleStatisticFilter} />
-      </div>
       <div className="mt-8 p-6 bg-parchment rounded-2xl shadow-lg" ref={bookListRef} id="book-list">
         <div className="mb-4 flex justify-center">
           <input
@@ -87,38 +73,30 @@ const Books = () => {
             className="border border-sepia p-2 rounded-md w-1/3 bg-parchment text-sepia placeholder-sepia"
           />
         </div>
-        <div className="flex justify-start items-center mb-4">
-          <select
-            value={filterStatus}
-            onChange={handleFilterChange}
-            className="border border-sepia p-2 rounded-md mr-8 bg-parchment text-sepia"
-          >
-            <option value="Tous">Tous</option>
-            <option value="Lu">Lu</option>
-            <option value="En cours">En cours</option>
-            <option value="À lire">À lire</option>
-            <option value="À acheter">À acheter</option>
-            <option value="À vendre">À vendre</option>
-          </select>
-          <select
-            value={sortOption}
-            onChange={handleSortChange}
-            className="border border-sepia p-2 rounded-md bg-parchment text-sepia"
-          >
-            <option value="titre">Titre</option>
-            <option value="auteur">Auteur</option>
-          </select>
-        </div>
-        <BookList
-          books={sortedBooks}
-          deleteBook={handleDeleteBook}
-          onUpdateStatus={handleUpdateStatus}
-          onUpdateRating={updateBookRating}
-          onAddComment={addComment}
-          onDeleteComment={deleteComment}
-          onUpdateComment={updateComment}
-          onToggleForSale={handleToggleForSale}
+        <FilterButtons
+          currentFilter={filterStatus}
+          onFilterChange={setFilterStatus}
+          currentSort={sortOption}
+          onSortChange={setSortOption}
         />
+        {isLoading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <SkeletonCard key={i} />
+            ))}
+          </div>
+        ) : (
+          <BookList
+            books={sortedBooks}
+            deleteBook={handleDeleteBook}
+            onUpdateStatus={handleUpdateStatus}
+            onUpdateRating={updateBookRating}
+            onAddComment={addComment}
+            onDeleteComment={deleteComment}
+            onUpdateComment={updateComment}
+            onToggleForSale={handleToggleForSale}
+          />
+        )}
       </div>
     </div>
   );
