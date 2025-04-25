@@ -1,6 +1,6 @@
 import { useState, useContext, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Library } from "lucide-react";
+import { Library, Menu, X } from "lucide-react";
 import AuthContext from "../context/AuthContext";
 import { useBooks } from "../context/BookContext";
 import imageCompression from "browser-image-compression";
@@ -15,6 +15,7 @@ function Header() {
   const [image, setImage] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const editorRef = useRef(null);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const handleLogout = () => {
     navigate("/login");
@@ -92,63 +93,131 @@ function Header() {
             <Library className="w-8 h-8" />
             <span className="text-xl font-heading text-rust">BiblioTracker</span>
           </div>
-          <nav className="p-4">
-            <ul className="flex items-center justify-between">
-              <div className="flex space-x-4">
+          <nav className="relative">
+            {/* Mobile burger button */}
+            <button
+              className="md:hidden text-sepia p-2"
+              onClick={() => setMenuOpen(!menuOpen)}
+              aria-label="Toggle menu"
+            >
+              {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+
+            {/* Desktop menu */}
+            <div className="hidden md:flex md:items-center md:space-x-6">
+              <Link to="/" className="text-sepia hover:text-rust transition">
+                Accueil
+              </Link>
+              <Link to="/books" className="text-sepia hover:text-rust transition">
+                Mes Livres
+              </Link>
+              <Link to="/add-book" className="text-sepia hover:text-rust transition">
+                Ajouter un Livre
+              </Link>
+              <Link to="/statistics" className="text-sepia hover:text-rust transition">
+                Statistiques
+              </Link>
+              {user ? (
+                <>
+                  <span className="hidden lg:inline text-sepia">Bienvenue, {user.name}</span>
+                  <img
+                    src={
+                      user?.avatar
+                        ? `${import.meta.env.VITE_API_URL}${user.avatar}`
+                        : `${import.meta.env.VITE_API_URL}/uploads/avatars/default-avatar.png`
+                    }
+                    alt="User Avatar"
+                    className="hidden lg:block w-8 h-8 rounded-full border-2 border-sepia cursor-pointer"
+                    onClick={handleEditAvatar}
+                  />
+                  <button
+                    onClick={handleLogout}
+                    className="px-3 py-1 bg-rust text-parchment rounded-lg shadow hover:bg-teal transition"
+                  >
+                    Déconnexion
+                  </button>
+                </>
+              ) : (
+                <Link
+                  to="/login"
+                  className="px-3 py-1 bg-rust text-parchment rounded-lg shadow hover:bg-teal transition"
+                >
+                  Connexion
+                </Link>
+              )}
+            </div>
+
+            {/* Overlay */}
+            {menuOpen && (
+              <div
+                className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"
+                onClick={() => setMenuOpen(false)}
+              />
+            )}
+
+            {/* Side drawer */}
+            <div
+              className={`md:hidden fixed top-0 left-0 h-full w-64 bg-parchment z-40 transform transition-transform duration-300 ${
+                menuOpen ? 'translate-x-0' : '-translate-x-full'
+              }`}
+            >
+              <ul className="flex flex-col mt-16 space-y-4 px-4">
                 <li>
-                  <Link to="/" className="text-sepia hover:text-rust transition">
+                  <Link
+                    to="/"
+                    className="text-sepia hover:text-rust transition"
+                    onClick={() => setMenuOpen(false)}
+                  >
                     Accueil
                   </Link>
                 </li>
                 <li>
-                  <Link to="/books" className="text-sepia hover:text-rust transition">
+                  <Link
+                    to="/books"
+                    className="text-sepia hover:text-rust transition"
+                    onClick={() => setMenuOpen(false)}
+                  >
                     Mes Livres
                   </Link>
                 </li>
                 <li>
-                  <Link to="/add-book" className="text-sepia hover:text-rust transition">
+                  <Link
+                    to="/add-book"
+                    className="text-sepia hover:text-rust transition"
+                    onClick={() => setMenuOpen(false)}
+                  >
                     Ajouter un Livre
                   </Link>
                 </li>
                 <li>
-                  <Link to="/statistics" className="text-sepia hover:text-rust transition">
+                  <Link
+                    to="/statistics"
+                    className="text-sepia hover:text-rust transition"
+                    onClick={() => setMenuOpen(false)}
+                  >
                     Statistiques
                   </Link>
                 </li>
-              </div>
-              <div className="flex items-center ml-4 space-x-4">
-                {user ? (
-                  <>
-                    <span className="text-sm">Bienvenue, {user.name} !</span>
-                    <img
-                      src={
-                        user?.avatar
-                          ? `${import.meta.env.VITE_API_URL}${user.avatar}`
-                          : `${
-                              import.meta.env.VITE_API_URL
-                            }/uploads/avatars/default-avatar.png`
-                      }
-                      alt="User Avatar"
-                      className="w-10 h-10 rounded-full cursor-pointer border-2 border-sepia"
-                      onClick={handleEditAvatar}
-                    />
+                <li>
+                  {user ? (
                     <button
-                      onClick={handleLogout}
-                      className="px-4 py-2 bg-rust text-parchment rounded-lg shadow hover:bg-teal transition"
+                      onClick={() => { handleLogout(); setMenuOpen(false); }}
+                      className="block w-full text-left px-2 py-1 bg-rust text-parchment rounded-lg shadow hover:bg-teal transition"
                     >
                       Déconnexion
                     </button>
-                  </>
-                ) : (
-                  <Link
-                    to="/login"
-                    className="px-4 py-2 bg-rust text-parchment rounded-lg shadow hover:bg-teal transition"
-                  >
-                    Connexion
-                  </Link>
-                )}
-              </div>
-            </ul>
+                  ) : (
+                    <Link
+                      to="/login"
+                      className="block px-2 py-1 bg-rust text-parchment rounded-lg shadow hover:bg-teal transition"
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      Connexion
+                    </Link>
+                  )}
+                </li>
+              </ul>
+            </div>
           </nav>
         </div>
       </div>
