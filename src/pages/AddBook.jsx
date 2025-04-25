@@ -12,7 +12,6 @@ const manualSchema = yup.object({
   title: yup.string().required('Le titre est obligatoire'),
   author: yup.string().required("L'auteur est obligatoire"),
   genre: yup.string(),
-  cover: yup.string().url('URL invalide').nullable(),
 });
 
 const AddBook = () => {
@@ -26,7 +25,7 @@ const AddBook = () => {
 
   const methods = useForm({
     resolver: yupResolver(manualSchema),
-    defaultValues: { title: '', author: '', genre: '', cover: '' },
+    defaultValues: { title: '', author: '', genre: '' },
     mode: 'onTouched',
   });
   const { register, handleSubmit, formState: { errors }, setValue } = methods;

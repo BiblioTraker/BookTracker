@@ -34,6 +34,13 @@ export default function ManualBookForm({
           </p>
         </div>
 
+        {/* Register coverPreview as form value */}
+        <input
+          type="hidden"
+          {...register('cover')}
+          value={coverPreview || ''}
+        />
+
         {/* Auteur */}
         <div>
           <label htmlFor="manual-author" className="block mb-1 text-sepia">

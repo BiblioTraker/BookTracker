@@ -156,7 +156,7 @@ function BookList({ books, deleteBook, onUpdateStatus, onUpdateRating, onAddComm
                     />
                   )}
                 <img
-                  src={`https://api.allorigins.win/raw?url=${encodeURIComponent(book.cover)}`}
+                  src={book.cover}
                   alt={book.title}
                   className="w-32 h-48 object-cover mb-4"
                 />
