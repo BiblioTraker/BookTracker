@@ -14,6 +14,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import PublicRoute from "./components/PublicRoute"; // Importer PublicRoute
 import StatisticsPage from "./pages/StatisticsPage";
+import Footer from "./components/Footer";
 
 const App = () => {
   const location = useLocation();
@@ -102,6 +103,7 @@ const App = () => {
               />
             </Routes>
           </AnimatePresence>
+        <Footer />
         </div>
       </AuthProvider>
     </BooksProvider>
