@@ -35,10 +35,9 @@ const Home = () => {
       )}
       {books.length === 0 && (
         <div className="text-center mt-8">
-          <p className="text-xl font-heading text-rust mb-4">Ajoutez votre premier livre</p>
-          <Link to="/add-book">
+          <Link to="/Register">
             <button className="mt-4 px-6 py-3 bg-rust text-parchment rounded-lg shadow hover:bg-teal transition">
-              Ajouter un Livre
+            Inscrivez-vous et ajouter votre premier livre
             </button>
           </Link>
         </div>
