@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useBooks } from '../context/BookContext';
-import BookCard from './BookCard';
 import { motion } from 'framer-motion';
 
 // Helper to get n random unique books
@@ -74,12 +73,26 @@ export default function RecommendationSection() {
           </p>
         ) : recommendations.length > 0 ? (
           recommendations.map(book => (
-            <BookCard
+            <div
               key={book.id}
-              title={book.title}
-              author={book.author}
-              cover={book.cover}
-            />
+              className="relative w-48 h-64 group"
+            >
+              {book.cover ? (
+                <img
+                  src={book.cover}
+                  alt={`Couverture de ${book.title}`}
+                  className="w-full h-full object-cover rounded-lg"
+                />
+              ) : (
+                <div className="w-full h-full bg-gray-200 flex items-center justify-center rounded-lg">
+                  Pas d'image
+                </div>
+              )}
+              <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg p-2 text-center">
+                <h3 className="text-white text-lg font-semibold">{book.title}</h3>
+                <p className="text-white text-sm">{book.author}</p>
+              </div>
+            </div>
           ))
         ) : (
           <p className="text-sepia text-center col-span-full">
