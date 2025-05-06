@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import SkeletonCard from '../ui/SkeletonCard';
 import { AiOutlineClose } from 'react-icons/ai';
+import { useState } from 'react';
 
 export default function BookSearch({
   searchTerm,
@@ -8,8 +9,12 @@ export default function BookSearch({
   clearSearch,
   isLoading,
   searchResults,
-  handleAddBook
+  handleAddBook,
+  existingBooks = [],
 }) {
+  const [statusOptions, setStatusOptions] = useState({});
+  const existingKeys = existingBooks.map(b => `${b.title}:::${b.author}`);
+
   return (
     <>
       {/* Barre de recherche */}
@@ -63,12 +68,31 @@ export default function BookSearch({
               <p className="text-sepia mb-4">
                 Auteur : {book.volumeInfo.authors?.join(", ") || "Auteur inconnu"}
               </p>
-              <button
-                onClick={() => handleAddBook(book)}
-                className="mt-2 px-6 py-3 bg-rust text-parchment rounded-lg shadow hover:bg-teal transition"
-              >
-                Ajouter
-              </button>
+              <div className="flex flex-wrap gap-2 mb-4">
+                {['À lire', 'En cours', 'Lu', 'À acheter', 'À vendre'].map(option => (
+                  <label key={option} className="inline-flex items-center">
+                    <input
+                      type="radio"
+                      name={`status-${book.id}`}
+                      value={option}
+                      checked={(statusOptions[book.id] || 'À lire') === option}
+                      onChange={() =>
+                        setStatusOptions(prev => ({ ...prev, [book.id]: option }))
+                      }
+                      className="form-radio h-4 w-4 text-rust"
+                    />
+                    <span className="ml-1 text-sm">{option}</span>
+                  </label>
+                ))}
+              </div>
+              {!existingKeys.includes(`${book.volumeInfo.title}:::${book.volumeInfo.authors?.[0] || 'Auteur inconnu'}`) ? (
+                <button
+                  onClick={() => handleAddBook(book, statusOptions[book.id] || 'À lire')}
+                  className="mt-2 px-6 py-3 bg-rust text-parchment rounded-lg shadow hover:bg-teal transition"
+                >
+                  Ajouter
+                </button>
+              ) : null}
             </motion.div>
           ))}
         </motion.div>

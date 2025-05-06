@@ -67,7 +67,7 @@ const AddBook = () => {
         const response = await fetch(
           `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(
             searchTerm
-          )}&key=${API_KEY}`
+          )}&maxResults=40&key=${API_KEY}`
         );
         const data = await response.json();
         setSearchResults(data.items || []);
@@ -87,13 +87,13 @@ const AddBook = () => {
   }, [searchTerm, API_KEY]);
 
   // Fonction pour ajouter un livre depuis les résultats
-  const handleAddBook = (book) => {
+  const handleAddBook = (book, status) => {
     const newBook = {
       id: book.id,
       title: book.volumeInfo.title,
       author: book.volumeInfo.authors?.join(", ") || "Auteur inconnu",
       cover: book.volumeInfo.imageLinks?.thumbnail || "",
-      status: "À lire",
+      status: status,
     };
     addBook(newBook); // Appeler la fonction addBook du contexte
     // Afficher le message de succès
@@ -143,6 +143,7 @@ const AddBook = () => {
             isLoading={isLoading}
             searchResults={searchResults}
             handleAddBook={handleAddBook}
+            existingBooks={books}
           />
         )}
         {tab === 'manual' && (
