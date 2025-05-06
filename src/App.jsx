@@ -15,6 +15,11 @@ import ResetPassword from "./pages/ResetPassword";
 import PublicRoute from "./components/PublicRoute"; // Importer PublicRoute
 import StatisticsPage from "./pages/StatisticsPage";
 import Footer from "./components/Footer";
+import CookieBanner from './components/CookieBanner';
+import Legal from './pages/Legal';
+import Privacy from './pages/Privacy';
+import Contact from './pages/Contact';
+import CookieSettingsPage from './pages/CookieSettings';
 
 const App = () => {
   const location = useLocation();
@@ -25,6 +30,7 @@ const App = () => {
       <AuthProvider>
       <div className="min-h-screen bg-parchment text-sepia">
         <Header />
+        <CookieBanner />
         <AnimatePresence mode="wait">
           <Routes location={location} key={location.pathname}>
             <Route
@@ -101,6 +107,38 @@ const App = () => {
                   </PrivateRoute>
                 }
               />
+            <Route
+              path="/legal"
+              element={
+                <PageTransition>
+                  <Legal />
+                </PageTransition>
+              }
+            />
+            <Route
+              path="/privacy"
+              element={
+                <PageTransition>
+                  <Privacy />
+                </PageTransition>
+              }
+            />
+            <Route
+              path="/contact"
+              element={
+                <PageTransition>
+                  <Contact />
+                </PageTransition>
+              }
+            />
+            <Route
+              path="/cookie-settings"
+              element={
+                <PageTransition>
+                  <CookieSettingsPage />
+                </PageTransition>
+              }
+            />
             </Routes>
           </AnimatePresence>
         <Footer />

@@ -14,7 +14,13 @@ export default function Footer() {
             <li><Link to="/books" className="hover:text-rust">Livres</Link></li>
             <li><Link to="/statistics" className="hover:text-rust">Statistiques</Link></li>
             <li><Link to="/add-book" className="hover:text-rust">Ajouter un livre</Link></li>
+            <li><Link to="/legal" className="hover:text-rust">Mentions légales</Link></li>
+            <li><Link to="/privacy" className="hover:text-rust">Politique de confidentialité</Link></li>
+            <li><Link to="/contact" className="hover:text-rust">Contact</Link></li>
           </ul>
+          <div className="mt-4">
+            <a href="/cookie-settings" className="text-sm hover:text-rust">Paramètres des cookies</a>
+          </div>
         </div>
         {/* Social Media */}
         <div className="flex flex-col items-center">
