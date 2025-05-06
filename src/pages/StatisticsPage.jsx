@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useBooks } from "../context/BookContext";
 import Statistics from "../components/Statistics";
 import StatsHeader from '../components/StatsHeader';
@@ -6,6 +6,7 @@ import FilterButtons from '../components/ui/FilterButtons';
 
 import DateRangePicker from '../components/ui/DateRangePicker';
 import StatsActions from '../components/StatsActions';
+import GoogleAd from '../components/GoogleAd';
 
 const StatisticsPage = () => {
   const { books } = useBooks();
@@ -41,6 +42,14 @@ const StatisticsPage = () => {
             setDateRange({ from: null, to: null });
           }}
         />
+      <div className="my-6 text-center">
+        <GoogleAd
+          adSlot="5640793155"
+          className="mx-auto"
+          style={{ display: 'block', margin: '0 auto' }}
+          format="auto"
+        />
+      </div>
       <Statistics books={filteredBooks} onFilter={() => {}} />
     </div>
   );

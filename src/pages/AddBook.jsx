@@ -7,6 +7,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import AddBookTabs from '../components/addbook/AddBookTabs';
 import BookSearch from '../components/addbook/BookSearch';
 import ManualBookForm from '../components/addbook/ManualBookForm';
+import GoogleAd from '../components/GoogleAd';
 
 const manualSchema = yup.object({
   title: yup.string().required('Le titre est obligatoire'),
@@ -123,6 +124,14 @@ const AddBook = () => {
       <div className="p-6 mt-8 bg-parchment text-sepia rounded-2xl shadow-lg mx-4 sm:mx-8 md:mx-16 lg:mx-32">
         <h2 className="text-3xl font-heading text-rust mb-6">Ajouter un Livre</h2>
         <AddBookTabs tab={tab} setTab={setTab} />
+        <div className="my-6 text-center">
+          <GoogleAd
+            adSlot="7532459325"
+            className="mx-auto"
+            style={{ display: 'block', margin: '0 auto' }}
+            format="auto"
+          />
+        </div>
         {successMessage && (
           <motion.div
             role="status"

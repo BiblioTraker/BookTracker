@@ -4,6 +4,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import BookCard from '../components/BookCard';
 import RecommendationSection from "../components/RecommendationSection";
+import GoogleAd from '../components/GoogleAd';
 
 const Home = () => {
   const { books } = useBooks();
@@ -16,6 +17,14 @@ const Home = () => {
           Suivez vos lectures, visualisez vos progrès, et explorez vos livres préférés.
         </p>
       </header>
+      <div className="my-6 text-center">
+        <GoogleAd
+          adSlot="4637643185"
+          className="mx-auto"
+          style={{ display: 'block', margin: '0 auto' }}
+          format="auto"
+        />
+      </div>
       {books.length > 0 && (
         <section className="mb-8">
           <RecommendationSection />

@@ -3,6 +3,7 @@ import { useState, useRef } from "react";
 import BookList from "../components/BookList";
 import SkeletonCard from '../components/ui/SkeletonCard';
 import FilterButtons from '../components/ui/FilterButtons';
+import GoogleAd from '../components/GoogleAd';
 
 const Books = () => {
   const { books, deleteBook, updateBookStatus, updateBookRating, addComment, deleteComment, updateComment, toggleForSale, isLoading } = useBooks();
@@ -79,6 +80,14 @@ const Books = () => {
           currentSort={sortOption}
           onSortChange={setSortOption}
         />
+        <div className="my-6 text-center">
+          <GoogleAd
+            adSlot="4446071492"
+            className="mx-auto"
+            style={{ display: 'block', margin: '0 auto' }}
+            format="auto"
+          />
+        </div>
         {isLoading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {Array.from({ length: 8 }).map((_, i) => (
